@@ -2527,7 +2527,7 @@ async function initViewCounter() {
     const result = sessionActive
       ? await counter.get(COUNTER_NAME)
       : await counter.up(COUNTER_NAME);
-    const count = Number(result.value);
+    const count = Number(result.data?.up_count);
 
     if (!Number.isSafeInteger(count) || count < 0) {
       throw new Error('CounterAPI returned an invalid visit count.');
