@@ -2511,7 +2511,7 @@ const STORAGE_KEYS = {
 };
 
 // --- 1. WEBSITE VIEW COUNTER ENGINE ---
-const COUNTER_WORKSPACE = "Nitish Kumar's Workspace";
+const COUNTER_WORKSPACE = 'nitish-kumars-team-1-6098';
 const COUNTER_NAME = 'first-counter-6098';
 let currentViewCountDisplay = 'Loading...';
 
