@@ -2505,8 +2505,93 @@ const STORAGE_KEYS = {
   BOOKMARKS: 'py_book_bookmarks',
   VISITED: 'py_book_visited',
   LAST_TOPIC: 'py_book_last_topic',
-  RECENTS: 'py_book_recents'
+  RECENTS: 'py_book_recents',
+  THEME: 'py_book_theme',
+  SESSION: 'py_book_session_active_v2'
 };
+
+// --- 1. WEBSITE VIEW COUNTER ENGINE ---
+const COUNTER_WORKSPACE = "Nitish Kumar's Workspace";
+const COUNTER_NAME = 'first-counter-6098';
+let currentViewCountDisplay = 'Loading...';
+
+async function initViewCounter() {
+  const sessionActive = sessionStorage.getItem(STORAGE_KEYS.SESSION);
+
+  try {
+    if (typeof Counter === 'undefined') {
+      throw new Error('CounterAPI library failed to load.');
+    }
+
+    const counter = new Counter({ workspace: COUNTER_WORKSPACE });
+    const result = sessionActive
+      ? await counter.get(COUNTER_NAME)
+      : await counter.up(COUNTER_NAME);
+    const count = Number(result.value);
+
+    if (!Number.isSafeInteger(count) || count < 0) {
+      throw new Error('CounterAPI returned an invalid visit count.');
+    }
+
+    if (!sessionActive) {
+      sessionStorage.setItem(STORAGE_KEYS.SESSION, 'true');
+    }
+
+    updateViewCounterDisplays(count);
+  } catch (error) {
+    console.error('Unable to load the shared reader visit count:', error);
+    updateViewCounterDisplays('Unavailable');
+  }
+}
+
+function updateViewCounterDisplays(count) {
+  currentViewCountDisplay = typeof count === 'number' ? count.toLocaleString() : count;
+  const statEl = document.getElementById('statVisitsNum');
+  const badgeEl = document.getElementById('visitorCountBadgeNum');
+  if (statEl) statEl.textContent = currentViewCountDisplay;
+  if (badgeEl) badgeEl.textContent = currentViewCountDisplay;
+}
+
+// --- 2. DARK & LIGHT THEME ENGINE ---
+function initTheme() {
+  const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'dark';
+  applyTheme(savedTheme, false);
+}
+
+function applyTheme(theme, showFeedback = false) {
+  const effectiveTheme = (theme === 'light') ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', effectiveTheme);
+  document.body.setAttribute('data-theme', effectiveTheme);
+  localStorage.setItem(STORAGE_KEYS.THEME, effectiveTheme);
+
+  const sunIcon = document.querySelector('.theme-sun');
+  const moonIcon = document.querySelector('.theme-moon');
+  const toggleBtn = document.getElementById('themeToggle');
+
+  if (effectiveTheme === 'light') {
+    if (sunIcon) sunIcon.style.display = 'none';
+    if (moonIcon) moonIcon.style.display = 'block';
+    if (toggleBtn) {
+      toggleBtn.title = 'Switch to Dark Mode';
+      toggleBtn.setAttribute('aria-label', 'Switch to Dark Mode');
+    }
+    if (showFeedback) showToast('Light Mode activated', 'info');
+  } else {
+    if (sunIcon) sunIcon.style.display = 'block';
+    if (moonIcon) moonIcon.style.display = 'none';
+    if (toggleBtn) {
+      toggleBtn.title = 'Switch to Light Mode';
+      toggleBtn.setAttribute('aria-label', 'Switch to Light Mode');
+    }
+    if (showFeedback) showToast('Dark Mode activated', 'info');
+  }
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const newTheme = (current === 'dark') ? 'light' : 'dark';
+  applyTheme(newTheme, true);
+}
 
 let currentTopicId = null;
 let bookmarks = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKMARKS) || '[]'));
@@ -3260,6 +3345,81 @@ document.addEventListener('keydown', (e) => {
 });
 
 // --- NAVIGATION & ROUTING ---
+
+// --- HOMEPAGE / WELCOME SCREEN CONTROLLER ---
+function showWelcomeScreen() {
+  currentTopicId = null;
+  history.pushState(null, '', window.location.pathname);
+
+  // Clear active highlights in sidebar
+  document.querySelectorAll('.topic-link').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.chapter-header').forEach(el => el.classList.remove('active-chapter'));
+
+  if (!DOM.contentWrap) return;
+
+  const currentVisits = currentViewCountDisplay;
+
+  DOM.contentWrap.innerHTML = `
+    <div class="welcome-screen content-anim" id="welcomeScreen">
+      <div class="welcome-icon">
+        <svg width="72" height="72" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#F5E65A" opacity="0.1"/>
+          <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="9" font-family="JetBrains Mono" fill="#F5E65A" font-weight="700">Py</text>
+        </svg>
+      </div>
+      <h1 class="welcome-title">PYTHON</h1>
+      <p class="welcome-subtitle">Interactive Programming Notes</p>
+      <p class="welcome-desc">Interactive Digital Programming Textbook</p>
+      
+      <!-- Website View Counter Badge on Homepage -->
+      <div class="welcome-visitor-badge" id="welcomeVisitorBadge" title="Total unique visitor sessions">
+        <span class="badge-pulse"></span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span class="visitor-badge-text">Total Reader Visits: <strong id="visitorCountBadgeNum">${currentVisits}</strong></span>
+      </div>
+
+      <div class="welcome-actions">
+        <button class="btn-primary" id="startReadingBtn">Start Reading →</button>
+        <button class="btn-ghost" id="continueBtn" style="display:none">Continue Reading</button>
+      </div>
+      <div class="welcome-stats">
+        <div class="stat"><span class="stat-num">18+</span><span class="stat-label">Chapters</span></div>
+        <div class="stat"><span class="stat-num">70+</span><span class="stat-label">Topics</span></div>
+        <div class="stat"><span class="stat-num">100+</span><span class="stat-label">Examples</span></div>
+        <div class="stat stat-visits"><span class="stat-num" id="statVisitsNum">${currentVisits}</span><span class="stat-label">Total Visits</span></div>
+      </div>
+    </div>
+  `;
+
+  // Hide nav footer on welcome screen
+  if (DOM.topicNavFooter) DOM.topicNavFooter.style.display = 'none';
+
+  // Wire up start reading and continue buttons
+  const startBtn = document.getElementById('startReadingBtn');
+  if (startBtn) {
+    startBtn.addEventListener('click', () => {
+      if (ALL_TOPICS.length > 0) navigateToTopic(ALL_TOPICS[0].id);
+    });
+  }
+
+  updateContinueUI();
+
+  // Reset Right Panel
+  if (DOM.rpChapter) DOM.rpChapter.textContent = 'Welcome & Overview';
+  if (DOM.rpToc) {
+    DOM.rpToc.innerHTML = `
+      <li onclick="window.scrollTo({top:0, behavior:'smooth'})">Overview</li>
+      <li onclick="document.getElementById('welcomeVisitorBadge')?.scrollIntoView({behavior:'smooth'})">Live View Counter</li>
+      <li onclick="document.querySelector('.welcome-stats')?.scrollIntoView({behavior:'smooth'})">Book Stats</li>
+    `;
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function navigateToTopic(topicId) {
   const topic = TOPIC_MAP.get(topicId);
   if (!topic) return;
@@ -3273,6 +3433,8 @@ window.addEventListener('popstate', () => {
   const hash = window.location.hash.replace('#', '');
   if (hash && TOPIC_MAP.has(hash)) {
     renderTopicContent(TOPIC_MAP.get(hash));
+  } else {
+    showWelcomeScreen();
   }
 });
 
@@ -3386,6 +3548,8 @@ function formatParagraphs(text) {
 
 // --- INITIALIZATION ---
 function init() {
+  initTheme();
+  initViewCounter();
   renderSidebar();
   updateBookmarkUI();
   updateProgressUI();
@@ -3397,10 +3561,19 @@ function init() {
   if (hash && TOPIC_MAP.has(hash)) {
     renderTopicContent(TOPIC_MAP.get(hash));
   } else {
-    const last = localStorage.getItem(STORAGE_KEYS.LAST_TOPIC);
-    if (last && TOPIC_MAP.has(last)) {
-      updateContinueUI();
-    }
+    showWelcomeScreen();
+  }
+
+  // Hook Header Brand to Return Home
+  const brandHome = document.getElementById('brandHome');
+  if (brandHome) {
+    brandHome.addEventListener('click', () => showWelcomeScreen());
+  }
+
+  // Hook Theme Toggle Button
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
   }
 }
 
