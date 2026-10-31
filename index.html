@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PYTHON – Interactive Programming Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header" id="site-header">
+    <div class="header-left">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#F5E65A" opacity="0.15"/>
+            <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="11" font-family="JetBrains Mono" fill="#F5E65A" font-weight="600">Py</text>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">PYTHON</span>
+          <span class="brand-subtitle">Interactive Programming Notes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="search-wrapper" id="searchWrapper">
+        <div class="search-box" id="searchBox" role="searchbox" aria-label="Search topics">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search chapters, topics, concepts..." autocomplete="off" spellcheck="false" />
+          <kbd class="search-shortcut">Ctrl+K</kbd>
+          <button class="search-clear" id="searchClear" aria-label="Clear search" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="search-results" id="searchResults" role="listbox" aria-label="Search results"></div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="hdr-btn" id="bookmarkToggle" title="Bookmarks" aria-label="View bookmarks">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span class="bookmark-count" id="bookmarkCount" style="display:none">0</span>
+      </button>
+
+      <div class="progress-pill" title="Reading progress">
+        <svg width="30" height="30" viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(138,255,181,0.15)" stroke-width="3"/>
+          <circle cx="18" cy="18" r="14" fill="none" stroke="#8AFFB5" stroke-width="3"
+            stroke-dasharray="88" stroke-dashoffset="88" stroke-linecap="round"
+            transform="rotate(-90 18 18)" id="progressCircle"/>
+        </svg>
+        <span class="progress-text" id="progressText">0%</span>
+      </div>
+
+      <button class="hdr-btn" id="fullscreenBtn" title="Fullscreen reading" aria-label="Fullscreen">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+      </button>
+
+      <button class="hdr-btn" id="printBtn" title="Print / PDF" aria-label="Print">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+          <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== OVERLAY (mobile) ===== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ===== BOOKMARKS PANEL ===== -->
+  <div class="bookmarks-panel" id="bookmarksPanel">
+    <div class="bp-header">
+      <span>Bookmarks</span>
+      <button class="bp-close" id="bookmarkClose" aria-label="Close bookmarks">✕</button>
+    </div>
+    <div class="bp-list" id="bookmarkList"></div>
+  </div>
+
+  <!-- ===== MAIN LAYOUT ===== -->
+  <div class="layout" id="layout">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar" aria-label="Book navigation">
+      <div class="sidebar-controls">
+        <div class="sidebar-search-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="sidebarSearch" placeholder="Filter topics…" autocomplete="off" />
+        </div>
+        <div class="sidebar-actions">
+          <button class="sb-action-btn" id="expandAllBtn">Expand All</button>
+          <button class="sb-action-btn" id="collapseAllBtn">Collapse All</button>
+        </div>
+      </div>
+
+      <nav class="chapter-nav" id="chapterNav" aria-label="Chapters"></nav>
+
+      <div class="sidebar-footer">
+        <div class="sb-continue" id="sbContinue" style="display:none">
+          <span class="sb-continue-label">Continue Reading</span>
+          <span class="sb-continue-topic" id="sbContinueTopic"></span>
+          <button class="sb-continue-btn" id="sbContinueBtn">Resume →</button>
+        </div>
+        <div class="sb-recents" id="sbRecents" style="display:none">
+          <div class="sb-section-title">Recently Visited</div>
+          <ul class="sb-recent-list" id="sbRecentList"></ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="reading-area" id="readingArea" role="main">
+      <div class="content-wrap" id="contentWrap">
+        <!-- Content is injected here by JS -->
+        <div class="welcome-screen" id="welcomeScreen">
+          <div class="welcome-icon">
+            <svg width="72" height="72" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#F5E65A" opacity="0.1"/>
+              <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="9" font-family="JetBrains Mono" fill="#F5E65A" font-weight="700">Py</text>
+            </svg>
+          </div>
+          <h1 class="welcome-title">PYTHON</h1>
+          <p class="welcome-subtitle">Interactive Programming Notes</p>
+          <p class="welcome-desc">Interactive Digital Programming Textbook</p>
+          <div class="welcome-actions">
+            <button class="btn-primary" id="startReadingBtn">Start Reading →</button>
+            <button class="btn-ghost" id="continueBtn" style="display:none">Continue Reading</button>
+          </div>
+          <div class="welcome-stats">
+            <div class="stat"><span class="stat-num">18+</span><span class="stat-label">Chapters</span></div>
+            <div class="stat"><span class="stat-num">70+</span><span class="stat-label">Topics</span></div>
+            <div class="stat"><span class="stat-num">100+</span><span class="stat-label">Examples</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAV FOOTER -->
+      <div class="topic-nav-footer" id="topicNavFooter" style="display:none">
+        <button class="nav-btn prev-btn" id="prevTopicBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <span id="prevLabel">Previous</span>
+        </button>
+        <div class="nav-footer-info">
+          <span id="currentPageIndicator">Page 1</span>
+        </div>
+        <button class="nav-btn next-btn" id="nextTopicBtn">
+          <span id="nextLabel">Next</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel" id="rightPanel" aria-label="Page navigation">
+      <div class="rp-section">
+        <div class="rp-title">On This Page</div>
+        <ul class="rp-toc" id="rpToc"></ul>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title">Current Chapter</div>
+        <div class="rp-info" id="rpChapter">—</div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title">Progress</div>
+        <div class="rp-progress-bar">
+          <div class="rp-progress-fill" id="rpProgressFill" style="width:0%"></div>
+        </div>
+        <div class="rp-progress-label" id="rpProgressLabel">0 / 0 topics read</div>
+      </div>
+      <div class="rp-section" id="rpBookmarksSection" style="display:none">
+        <div class="rp-title">Bookmarks</div>
+        <ul class="rp-bookmarks" id="rpBookmarks"></ul>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title">Related</div>
+        <ul class="rp-related" id="rpRelated"></ul>
+      </div>
+    </aside>
+
+  </div><!-- /.layout -->
+
+  <!-- SCROLL TO TOP -->
+  <button class="scroll-top" id="scrollTop" aria-label="Scroll to top" title="Scroll to top">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="18 15 12 9 6 15"/>
+    </svg>
+  </button>
+
+  <!-- LOADING OVERLAY -->
+  <div class="loading-overlay" id="loadingOverlay" style="display:none">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast"></div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
