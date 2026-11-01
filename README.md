@@ -6,7 +6,7 @@ An interactive digital Python textbook designed to make learning Python easier, 
 
 This project provides a structured platform to learn Python through an interactive web interface.
 
-Instead of reading static notes, users can explore content with a clean and feature-rich reading experience.
+Each lesson includes a short introduction, a clear explanation, key takeaways, and worked examples so the book can be used as a self-contained written resource.
 
 ## ✨ Features
 
@@ -24,9 +24,9 @@ Instead of reading static notes, users can explore content with a clean and feat
 
 | Feature           | Description |
 | ----------------- | ----------- |
-| Chapters          | 28+         |
-| Topics            | 70+         |
-| Examples          | 100+        |
+| Chapters          | 28          |
+| Lessons           | 68          |
+| Worked examples   | 71          |
 | Progress Tracking | Yes         |
 | Bookmarks         | Yes         |
 | Search            | Yes         |

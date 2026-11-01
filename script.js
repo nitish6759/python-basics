@@ -26,7 +26,7 @@ const BOOK_DATA = [
             {
               "title": "Verify Python Installation in Terminal",
               "code": "# Run this command in your command prompt or terminal:\n# python --version\n# or\n# python3 --version\n\nimport sys\nprint(f\"Python Version: {sys.version}\")\nprint(f\"Executable Location: {sys.executable}\")",
-              "output": "Python Version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39)\nExecutable Location: C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+              "output": "Python Version: 3.x.x\nExecutable Location: path/to/python"
             }
           ],
           "notes": {
@@ -95,8 +95,8 @@ const BOOK_DATA = [
             }
           ],
           "notes": {
-            "type": "important",
-            "text": "Note from Python Academy: This book is designed to work hand-in-hand with the visual explanations and examples shown in the video on our official Youtube channel: Python Academy."
+            "type": "info",
+            "text": "You can understand and practise every lesson directly from the explanations and examples in this book."
           },
           "related": [
             "comments-in-python",
@@ -561,22 +561,16 @@ const BOOK_DATA = [
         "content": {
           "intro": "When evaluated in a boolean context, every Python object is considered either 'truthy' or 'falsy'.",
           "definition": "Truthy values evaluate to True when converted via bool(). Falsy values evaluate to False.",
-          "explanation": "Some important concepts of type conversions are you cannot convert a character to a int() that basic watch the video for more set of information. bool() converter turns everything to True and False but which thing will be converted to true and which false. Lets see. There are truthy values and Falsy values, and there are only 7 falsy values that means only 7 things will be converted to false rest True:\n0\n0.0\nFalse\n\"\"\n[]\n{}\n()\nAll these values are falsy remaining will be converted to True.",
+          "explanation": "Python can convert many values between types, but a character such as '7' is text until you explicitly convert it with int('7'). A value such as 'hello' cannot be converted to an integer because it does not represent a whole number.\n\nThe bool() function tells you whether a value is truthy or falsy. Common falsy values are False, None, numeric zero (including 0 and 0.0), and empty containers or sequences such as '', [], {}, set(), and (). Non-empty strings and collections, non-zero numbers, and most other objects are truthy.\n\nPython uses these rules in conditions: an empty list makes if items: skip its block, while a non-empty list enters it. You can call bool(value) to inspect the same rule directly. Custom objects can also define their truth value with __bool__() or __len__().",
           "keyPoints": [
-            "There are only 7 fundamental falsy values in basic Python types:",
-            "1. 0 (integer zero)",
-            "2. 0.0 (float zero)",
-            "3. False (boolean False)",
-            "4. \"\" (empty string)",
-            "5. [] (empty list)",
-            "6. {} (empty dictionary)",
-            "7. () (empty tuple)",
-            "Also None is falsy.",
-            "All other non-empty and non-zero values are Truthy."
+            "Falsy values include False, None, numeric zero, and empty strings, collections, and ranges.",
+            "Truthy values include non-empty strings and collections and non-zero numbers.",
+            "Use bool(value) to inspect truthiness; if value: uses the same rule in a condition.",
+            "Convert numeric text explicitly, for example int('7'); invalid numeric text raises ValueError."
           ],
           "codeExamples": [
             {
-              "title": "Testing the 7 Falsy Values",
+              "title": "Testing common falsy and truthy values",
               "code": "# The 7 falsy values test:\nprint(\"bool(0) ->\", bool(0))\nprint(\"bool(0.0) ->\", bool(0.0))\nprint(\"bool(False) ->\", bool(False))\nprint(\"bool('') ->\", bool(\"\"))\nprint(\"bool([]) ->\", bool([]))\nprint(\"bool({}) ->\", bool({}))\nprint(\"bool(()) ->\", bool(()))\nprint(\"bool(None) ->\", bool(None))\n\n# Truthy examples:\nprint(\"bool('hello') ->\", bool(\"hello\"))\nprint(\"bool([1, 2]) ->\", bool([1, 2]))\nprint(\"bool(-5) ->\", bool(-5))",
               "output": "bool(0) -> False\nbool(0.0) -> False\nbool(False) -> False\nbool('') -> False\nbool([]) -> False\nbool({}) -> False\nbool(()) -> False\nbool(None) -> False\nbool('hello') -> True\nbool([1, 2]) -> True\nbool(-5) -> True"
             }
@@ -1045,7 +1039,7 @@ const BOOK_DATA = [
           ],
           "notes": {
             "type": "info",
-            "text": "range objects are lazy iterators in Python 3; they do not store all numbers in memory at once."
+            "text": "A range is a compact, reusable sequence: it does not store every generated integer, and iterating over it creates an iterator."
           },
           "related": [
             "loops-for-strings",
@@ -1062,7 +1056,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "Strings are sequences of characters and can be iterated in two distinct ways.",
           "definition": "String iteration can be performed either directly character-by-character or via index numbers with len() and range().",
-          "explanation": "Loops for strings work slightly differently. You can iterate through a string in two ways:\n1. Using index values\n2. Iterating directly over the string\nIterating using the index values, Now we know that index values are numbers and for numbers we again have to use range function. Here you iterated over the string using the index values for better understanding watch the video. Second way is simpler we can directly iterate but using this method will give you the direct access to the characters instead of index values.",
+          "explanation": "A string is a sequence, so a for loop can visit each character in order. Direct iteration is usually the clearest option when you only need the characters.\n\nUse range(len(text)) when you also need each character's index. Python indexes start at 0, so the final valid index is len(text) - 1. Accessing text[i] with an index outside that range raises IndexError.\n\nThe example prints both the characters and their matching zero-based positions. Choose direct iteration for simplicity; choose indexes when you need positions or neighboring characters.",
           "keyPoints": [
             "Direct iteration: for char in my_string: - clean, simple, and gives characters.",
             "Index iteration: for i in range(len(my_string)): - gives index positions."
@@ -1071,7 +1065,7 @@ const BOOK_DATA = [
             {
               "title": "The Two Ways to Loop Over Strings",
               "code": "text = \"PYTHON\"\n\n# 1. Direct Iteration (Direct access to characters):\nprint(\"1. Direct iteration:\")\nfor ch in text:\n    print(f\"Char: {ch}\")\n\n# 2. Iteration using Index Values:\nprint(\"\\n2. Index iteration:\")\nfor i in range(len(text)):\n    print(f\"Index {i} -> {text[i]}\")",
-              "output": "1. Direct iteration:\nChar: S\nChar: H\nChar: E\nChar: R\nChar: Y\n\n2. Index iteration:\nIndex 0 -> S\nIndex 1 -> H\nIndex 2 -> E\nIndex 3 -> R\nIndex 4 -> Y"
+              "output": "1. Direct iteration:\nChar: P\nChar: Y\nChar: T\nChar: H\nChar: O\nChar: N\n\n2. Index iteration:\nIndex 0 -> P\nIndex 1 -> Y\nIndex 2 -> T\nIndex 3 -> H\nIndex 4 -> O\nIndex 5 -> N"
             }
           ],
           "notes": {
@@ -1426,7 +1420,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "List traversal and manipulation methods form daily programming workflows.",
           "definition": "List methods allow in-place insertion, deletion, sorting, and inspection of list elements.",
-          "explanation": "Now list has Indexing and slicing and it is same as string if you forgot how string indexing and slicing works watch the video or revise the notes. The changes we saw in string and list is about mutability, we can’t change the values of string. but we can of list.\nNow list traversing is also similar to string traversing it can be looped using the index values and directly. Now list has some methods that are used to do many, and don’t worry if you are not sure what are methods, for now just think they are like function, further we will see it clearly. Now see some of the examples of the methods you will get it what they are used for. So these are some methods that are used in list.",
+          "explanation": "Lists are ordered and mutable: you can read an item by its zero-based index, select a slice, replace an item, and add or remove items. Slicing uses list[start:stop], includes start, and excludes stop; omitting either boundary uses the beginning or end of the list. A negative index counts backward from the end.\n\nYou can traverse a list directly with for item in items, or use range(len(items)) when the index is also needed. Direct iteration is simpler when you only use each value.\n\nCommon methods include append(item) to add one item, extend(iterable) to add several, insert(index, item), remove(value), pop(index) to remove and return an item, and sort() to sort the list in place. Methods that modify a list usually change the original list rather than returning a new one.",
           "keyPoints": [
             "append(x): Adds x to the end of list.",
             "insert(index, x): Inserts x at specified index.",
@@ -1579,19 +1573,20 @@ const BOOK_DATA = [
         "readTime": "3 min",
         "content": {
           "intro": "Sets are unordered collections of unique, hashable elements based on mathematical set theory.",
-          "definition": "A set is an unordered, mutable collection of unique, immutable elements enclosed in curly braces {}.",
-          "explanation": "Before starting we need to understand some of the terminology:\n- Mutable: Sets are mutable you can change the values of set.\n- Duplicates: You cannot have any duplicate values in set that means every element will be unique.\n- Unordered: Sets are unordered and you cannot access them through index values.\n- Heterogenous: Set is semi-heterogenous it can store some data types like string, numbers, tuples but not everything.\nHow Set stores value in python:\nEach value in a set is hashed using a hash function (hash() in Python). The hash is used as an index to store the element in memory. Since hashing does not maintain order, sets are unordered. Only immutable (hashable) objects can be stored in a set (e.g., numbers, strings, tuples). Mutable objects like lists and dictionaries are not allowed. See the video for more clear understanding.",
+          "definition": "A set is a mutable collection of unique, hashable elements. Sets do not support indexing or slicing.",
+          "explanation": "A set stores each distinct value once. Adding a duplicate does not create another copy. Sets are mutable, so you can add or remove elements; their elements must be hashable so Python can find them efficiently. Integers and strings are hashable, while lists and dictionaries are not. A tuple is hashable only when all of its elements are hashable; frozenset is an immutable set that can itself be a set element.\n\nSets do not provide positional access: use membership tests such as 'pear' in fruits rather than fruits[0]. Do not rely on an iteration order; it is not a sorting rule and can vary. Use sorted(my_set) when you need predictable display order.\n\nAn empty set is written set(). The empty braces {} create an empty dictionary.",
           "keyPoints": [
-            "Mutable: Can add and remove items.",
-            "No duplicates: Duplicate values automatically collapsed into one.",
-            "Unordered: No guaranteed ordering; no indexing (s[0] is invalid).",
-            "Semi-heterogeneous: Only hashable (immutable) items allowed."
+            "Sets are mutable, contain unique elements, and do not support indexing.",
+            "Elements must be hashable; mutable lists and dictionaries cannot be elements.",
+            "Tuple elements must all be hashable for the tuple to be used in a set.",
+            "Set iteration order is not a sorting guarantee; use sorted() when order matters.",
+            "Use set() for an empty set; {} creates an empty dictionary."
           ],
           "codeExamples": [
             {
               "title": "Set Deduplication and Hash Function",
-              "code": "# Sets automatically eliminate duplicates:\nmy_set = {1, 2, 3, 2, 1, 4}\nprint(\"Set after deduplication:\", my_set)\n\n# Hashing demonstration with hash():\nprint(\"hash('apple'):\", hash('apple'))\nprint(\"hash(42):\", hash(42))\n\n# Trying to put a mutable list in a set raises TypeError:\ntry:\n    invalid_set = {1, [2, 3]}  # Unhashable type: 'list'\nexcept TypeError as e:\n    print(\"TypeError caught:\", e)",
-              "output": "Set after deduplication: {1, 2, 3, 4}\nhash('apple'): <integer hash value>\nhash(42): 42\nTypeError caught: unhashable type: 'list'"
+              "code": "# Sets automatically eliminate duplicates:\nmy_set = {1, 2, 3, 2, 1, 4}\nprint(\"Set after deduplication:\", sorted(my_set))\n\n# Hashing demonstration with hash():\nprint(\"hash('apple'):\", hash('apple'))\nprint(\"hash(42):\", hash(42))\n\n# Trying to put a mutable list in a set raises TypeError:\ntry:\n    invalid_set = {1, [2, 3]}  # Unhashable type: 'list'\nexcept TypeError as e:\n    print(\"TypeError caught:\", e)",
+              "output": "Set after deduplication: [1, 2, 3, 4]\nhash('apple'): <integer hash value>\nhash(42): 42\nTypeError caught: unhashable type: 'list'"
             }
           ],
           "notes": {
@@ -1613,7 +1608,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "Sets provide mathematical operations: Union, Intersection, Difference, and Symmetric Difference.",
           "definition": "Mathematical operations between two sets to find commonalities and differences.",
-          "explanation": "A set cannot be traversed using the index values cause it is unordered and has no index. So many times it will give random values. Now set methods are very powerful cause you don’t have any indexing you cannot change the values but set is mutable so we use methods for this. For adding and removing the elements you can use methods as follows. Now these are some of the basic methods but sets also have some special methods for performing some special operations between 2 sets:\n- Union (|)\n- Intersection (&)\n- Difference (-)\n- Symmetric Difference (^)\nSo these are some other operations of sets that can be performed between 2 sets. And we also have shortcuts for them. Ok so we have seen these operations and while watching the video you have seen a venn diagram approach as well there are more methods you are open to try them and see the working. But at the end set is not used that much in python lets continue.",
+          "explanation": "Sets have no index, so visit their elements with for item in my_set or test membership with item in my_set. Iteration order is unspecified; it is not meaningful to describe it as random, and programs should not depend on it.\n\nUse add(item) to add one element, update(iterable) to add several, remove(item) to remove an existing element (raising KeyError if it is absent), and discard(item) to remove it without an error when absent.\n\nSet operations compare membership: A | B is the union, A & B is the intersection, A - B contains elements in A but not B, and A ^ B contains elements in exactly one of the sets. The corresponding methods are union(), intersection(), difference(), and symmetric_difference(). These operations return new sets; augmented forms such as A |= B update A.",
           "keyPoints": [
             "Union (A | B): All elements from both sets.",
             "Intersection (A & B): Only elements present in both sets.",
@@ -1623,8 +1618,8 @@ const BOOK_DATA = [
           "codeExamples": [
             {
               "title": "Set Methods and Mathematical Operations",
-              "code": "a = {1, 2, 3, 4}\nb = {3, 4, 5, 6}\n\n# Methods to add and remove:\na.add(10)\na.discard(10)  # removes without error if missing\n\n# Venn diagram set operations:\nprint(\"Union (a | b):\", a | b)\nprint(\"Intersection (a & b):\", a & b)\nprint(\"Difference (a - b):\", a - b)\nprint(\"Symmetric Diff (a ^ b):\", a ^ b)",
-              "output": "Union (a | b): {1, 2, 3, 4, 5, 6}\nIntersection (a & b): {3, 4}\nDifference (a - b): {1, 2}\nSymmetric Diff (a ^ b): {1, 2, 5, 6}"
+              "code": "a = {1, 2, 3, 4}\nb = {3, 4, 5, 6}\n\n# Methods to add and remove:\na.add(10)\na.discard(10)  # removes without error if missing\n\n# Venn diagram set operations:\nprint(\"Union (a | b):\", sorted(a | b))\nprint(\"Intersection (a & b):\", sorted(a & b))\nprint(\"Difference (a - b):\", sorted(a - b))\nprint(\"Symmetric Diff (a ^ b):\", sorted(a ^ b))",
+              "output": "Union (a | b): [1, 2, 3, 4, 5, 6]\nIntersection (a & b): [3, 4]\nDifference (a - b): [1, 2]\nSymmetric Diff (a ^ b): [1, 2, 5, 6]"
             }
           ],
           "notes": {
@@ -1687,7 +1682,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "Traversing keys, values, and item pairs using Python's dictionary iteration methods.",
           "definition": "Methods to access keys(), values(), and items() in dictionaries.",
-          "explanation": "We can traverse both keys and values in dictionary, but default loop is set on keys and you can access the values because of keys. So technically you can traverse on both keys and values at the same time? Do see the video explanation for better understanding. There are not many dictionary methods lets see the working of some? as you all know we can use help(dict) for getting the information of all the methods available.",
+          "explanation": "A dictionary maps unique keys to values. A loop written as for key in mapping visits keys by default; use mapping[key] to read the matching value.\n\nUse for key, value in mapping.items() when both parts are needed, for value in mapping.values() when only values matter, or for key in mapping when only keys matter. In modern Python, dictionaries preserve insertion order, but use an explicit sort when a different order is required.\n\nUseful methods include get(key, default) for a missing-safe lookup, keys(), values(), items(), update(other), and pop(key). A dictionary lookup with mapping[key] raises KeyError if the key is absent; get() returns its default instead.",
           "keyPoints": [
             "for k in d: Iterates through keys by default.",
             "for v in d.values(): Iterates through values.",
@@ -1792,7 +1787,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "Python provides 5 dedicated keywords to gracefully handle and recover from runtime exceptions.",
           "definition": "The structured exception handling mechanism: try, except, else, finally, raise.",
-          "explanation": "Keyword Purpose Table from the book:\n- try: Wrap the block of code that might cause an exception.\n- except: Handle the exception if it occurs\n- else: Run code only if no exception occurs\n- finally: Run code no matter what, whether there’s an exception or not\n- raise: Manually throw an exception\nSo these are the keywords that we use and all these keywords has their separate purpose as mentioned. To see the code part see the video.",
+          "explanation": "An exception is an error signal raised while a program runs. Use try around only the statements that may fail, and add an except clause for the specific exception you can handle. Catching a broad Exception should be intentional; it can hide programming mistakes.\n\nThe else block runs only when the try block completes without an exception. The finally block runs whether an exception occurred or not, so it is useful for cleanup. For resources such as files, a with statement is usually a safer cleanup pattern.\n\nUse raise to signal an error when a function cannot complete its documented task. An exception that is not handled by the current code continues propagating to its caller.",
           "keyPoints": [
             "try: Critical section containing risky code.",
             "except ExceptionType as err: Executes if the named exception is raised.",
@@ -1867,7 +1862,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "The 'with' statement is Python's context manager that automatically closes files when finished.",
           "definition": "The 'with' statement guarantees proper resource management by automatically invoking f.close() even if an exception occurs.",
-          "explanation": "This is the basic syntax through which we can open a text file and the ‘r’ there represents read mode and there are multiple modes like this as mentioned before. see the video for other modes as well. Now after working you have to close the file manually but for this we have with keyword. Now Lets create a basic file handling project.",
+          "explanation": "open(path, mode, encoding='utf-8') opens a file and returns a file object. Common modes are 'r' to read (the default), 'w' to create or replace a file, 'a' to append, and 'x' to create a new file only. Adding 'b' selects binary mode; adding '+' enables both reading and writing. Writing with 'w' replaces existing contents, so use it carefully.\n\nPrefer with open(path, mode, encoding='utf-8') as file: because Python closes the file automatically when the block ends, even if an exception occurs. Read text with read() or iterate over the file line by line; write text with write(). A relative path is resolved from the program's current working directory.\n\nThe example appends two notes, then reads them back. In a real application, choose a path the program is allowed to write to and handle errors such as a missing or inaccessible file.",
           "keyPoints": [
             "Traditional open requires manual close: f = open(...); ...; f.close().",
             "Using with open(...) as f: guarantees file descriptor release.",
@@ -2030,7 +2025,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "The constructor __init__ automatically initializes an object's state at the moment it is born.",
           "definition": "A constructor is a method that runs automatically when we call a class and this constructor function will target the objects location using the self keyword.",
-          "explanation": "You saw last example where we wanted material, zips and pockets from the user to create an object. If we talk about a function we can ask the user using parameters, but in class we can’t have parameters for that we use constructor. A constructor is a method that runs automatically when we call a class and this constructor function will target the objects location. To target the objects location we use self keyword. For clear understanding watch the video carefully. we will create the bag factory and will create multiple objects where self will target the specific locations of the objects.",
+          "explanation": "Calling a class creates a new instance and then initializes it. Python's __new__ method creates the instance; __init__ initializes that already-created instance with its starting state. For most beginner classes, you define __init__ and let Python handle __new__.\n\nWrite def __init__(self, ...): to define the initializer. When you call Bag('canvas', 3), Python passes the new instance as the first argument automatically; by convention that parameter is named self. You do not pass self yourself. Store instance-specific values with assignments such as self.material = material.\n\nEach instance has its own attributes, so two Bag objects can keep different materials or pocket counts. The initializer should prepare a valid initial state and generally should not return a value.",
           "keyPoints": [
             "__init__(self, ...): The dunder constructor method.",
             "Executes automatically as soon as Object = ClassName(...) is invoked.",
@@ -2307,7 +2302,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "Dunder (Double Underscore) or magic methods let your classes integrate seamlessly with Python's core language syntax.",
           "definition": "Dunder methods are special methods that start and end with double underscores (e.g. __init__, __str__, __add__, __len__).",
-          "explanation": "Dunder methods are special methods in Python that start and end with double underscores, like __init__, __str__, __add__, etc. They automatically get called when you perform certain actions on an object. They help you:\n- Customize behavior of your class\n- Make your class objects behave like built-in data types (like strings, lists, etc.)\nNow there are various dunder method see the video for some examples. Now lets create a Bank management project using Oops in python.",
+          "explanation": "Dunder (double-underscore) methods are special methods that let a class define how its instances work with Python syntax and built-in functions. Python calls them on your behalf: str(account) uses account.__str__(), account_a + account_b may use account_a.__add__(account_b), and len(account) may use account.__len__().\n\nDefine only the methods whose behavior makes sense for the class, and follow Python's expected return types. For example, __str__ should return a readable string; __add__ should return the result of the operation, often a new object or a numeric value. Python also uses __init__ to initialize an instance and __repr__ to provide a developer-oriented representation.\n\nThe bank-account example can customize its display and addition behavior, making the objects easier to inspect and combine without changing Python's built-in types.",
           "keyPoints": [
             "__init__: Initializer/constructor.",
             "__str__: Friendly string representation for print(obj).",
@@ -2349,7 +2344,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "Algorithmic star patterns and mathematical logic problems from Page 28 of the book.",
           "definition": "Visual star patterns and factorial number checks.",
-          "explanation": "This portion is only completed in video and here you will only see the Question so please watch the video to complete it. And you are good to go If you have completed till now but this section is for those who wants advance question solving skills.\nSome patterns first:\n1. Right angle triangle with stars\n2. Mirrored right angle triangle with stars\n3. A triangle with stars (Pyramid)\n4. A diamond with stars\nQuestion 1 - Strong number (Sum of factorials of digits equals number, e.g. 145 = 1! + 4! + 5! = 1 + 24 + 120 = 145).",
+          "explanation": "Nested loops are a useful way to print patterns: the outer loop chooses a row, and the inner loop prints the characters for that row. For a right triangle of height n, row i contains i stars. For a centered pyramid, row i has n - i leading spaces followed by i groups of '* '. Trace the first, middle, and final rows to check spacing.\n\nA strong number equals the sum of the factorials of its digits. For 145, the sum is 1! + 4! + 5! = 1 + 24 + 120 = 145. To test a number, repeatedly take its last digit with % 10, add that digit's factorial, then remove the digit with // 10. Compare the sum with the original number after the loop.\n\nThe worked example prints a right triangle, a pyramid, and checks 145. Try changing the height and the input number to trace how the loops and accumulator change.",
           "keyPoints": [
             "Nested loops: Outer loop controls rows, inner loops control spaces and stars.",
             "Strong Number: Each digit is extracted, its factorial computed and accumulated."
@@ -2380,7 +2375,7 @@ const BOOK_DATA = [
         "content": {
           "intro": "Python Cake & Icing analogy for decorators and dynamic argument unpacking.",
           "definition": "A decorator is a function that takes another function as input, extends its behavior without modifying the original code, and returns the modified function.",
-          "explanation": "Decorator:\nA decorator is just a function that modifies another function without changing its actual code. Imagine you have a cake (your function). A decorator is like putting icing on the cake. It doesn’t change the cake itself, but makes it better, prettier, or adds some new flavor. For creating a decorator you first have to create a decorator functions and then inside that we will create a wrapper. Its tough to understand with text see the video. For making the decorator with Arguments it is tough for this we will move towards our next advance stuff *args , **kwargs.\nArgs and Kwargs:\nThey’re special keywords in Python used in function definitions to accept a flexible number of arguments. Now you always don’t have to use Args and Kwargs the main thing is *, ** you can use any names in front of them. So *args are used for multiple positional arguments, and **kwargs are used for multiple key word arguments. And the *args becomes a tuple and **kwargs becomes a dictionary. The use case is great: You don’t need to know how many inputs you'll get; Helps in building flexible functions, decorators, APIs, and more.",
+          "explanation": "A decorator is a callable that takes a function and returns a replacement function, commonly to add behavior before or after the original call. A wrapper function usually closes over the original function, calls it, and returns its result.\n\nThe @icing_decorator syntax above a function is equivalent to defining the function and then assigning bake_cake = icing_decorator(bake_cake). The decorated name refers to the wrapper, so calling bake_cake runs the added behavior and then the original function.\n\nIn wrapper(*args, **kwargs), *args collects any extra positional arguments into a tuple and **kwargs collects extra named arguments into a dictionary. Passing them onward with original_function(*args, **kwargs) forwards both groups. The names args and kwargs are conventions; the single-star and double-star syntax do the work.\n\nA production decorator often uses functools.wraps(original_function) on the wrapper to preserve the original function's name and documentation.",
           "keyPoints": [
             "Cake & Icing analogy: Function = Cake; Decorator = Icing on top.",
             "*args: Gathers arbitrary positional arguments into a tuple.",
@@ -2488,6 +2483,13 @@ const BOOK_DATA = [
 const ALL_TOPICS = [];
 const TOPIC_MAP = new Map();
 const CHAPTER_MAP = new Map();
+const TOTAL_CODE_EXAMPLES = BOOK_DATA.reduce(
+  (total, chapter) => total + chapter.topics.reduce(
+    (chapterTotal, topic) => chapterTotal + (topic.content.codeExamples?.length || 0),
+    0
+  ),
+  0
+);
 
 BOOK_DATA.forEach(chapter => {
   CHAPTER_MAP.set(chapter.id, chapter);
@@ -2554,7 +2556,7 @@ function updateViewCounterDisplays(count) {
 
 // --- 2. DARK & LIGHT THEME ENGINE ---
 function initTheme() {
-  const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'dark';
+  const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'light';
   applyTheme(savedTheme, false);
 }
 
@@ -3135,17 +3137,26 @@ function renderTopicContent(topic) {
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
         </svg>
-        <span>Estimated read: ${topic.readTime || '3 min'} · Reference Page: ${topic.page}</span>
+        <span>${topic.readTime || '3 min'} read · Lesson ${ALL_TOPICS.findIndex(item => item.id === topic.id) + 1} of ${ALL_TOPICS.length}</span>
       </div>
-
-      <hr class="content-divider" />
   `;
+
+  if (topic.content.intro) {
+    html += `
+      <div class="topic-intro" id="sec-intro">
+        <span class="intro-label">In this lesson</span>
+        ${formatParagraphs(topic.content.intro)}
+      </div>
+    `;
+  }
+
+  html += '<hr class="content-divider" />';
 
   // Definition Box
   if (topic.content.definition) {
     html += `
       <div class="definition-box" id="sec-definition">
-        <div class="def-label">Definition & Concept</div>
+        <div class="def-label">The core idea</div>
         <p>${formatText(topic.content.definition)}</p>
       </div>
     `;
@@ -3155,7 +3166,7 @@ function renderTopicContent(topic) {
   if (topic.content.explanation) {
     html += `
       <div class="topic-section" id="sec-explanation">
-        <div class="section-label">Detailed Notes & Book Content</div>
+        <h2 class="section-label">How it works</h2>
         <div class="explanation">${formatParagraphs(topic.content.explanation)}</div>
       </div>
     `;
@@ -3165,7 +3176,7 @@ function renderTopicContent(topic) {
   if (topic.content.keyPoints && topic.content.keyPoints.length > 0) {
     html += `
       <div class="key-points" id="sec-keypoints">
-        <div class="key-points-title">Key Rules & Core Concepts</div>
+        <h2 class="key-points-title">Key takeaways</h2>
         <ul>
           ${topic.content.keyPoints.map(kp => `<li>${formatText(kp)}</li>`).join('')}
         </ul>
@@ -3176,7 +3187,7 @@ function renderTopicContent(topic) {
   // Code Examples
   if (topic.content.codeExamples && topic.content.codeExamples.length > 0) {
     html += `<div class="topic-section" id="sec-examples">
-      <div class="section-label">Python Code & Executable Examples</div>`;
+      <h2 class="section-label">Worked examples</h2>`;
 
     topic.content.codeExamples.forEach((ex, idx) => {
       html += `
@@ -3186,7 +3197,7 @@ function renderTopicContent(topic) {
               <span class="code-lang">Python</span>
               <span class="code-label">${escapeHTML(ex.title || `Example ${idx + 1}`)}</span>
             </div>
-            <button class="copy-btn" data-code="${encodeURIComponent(ex.code)}">
+            <button class="copy-btn" data-code="${encodeURIComponent(ex.code)}" aria-label="Copy ${escapeHTML(ex.title || `Example ${idx + 1}`)}">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
@@ -3202,10 +3213,13 @@ function renderTopicContent(topic) {
 
       if (ex.output) {
         html += `
-          <div class="output-block">
-            <div class="output-label">Expected Output</div>
-            <pre>${escapeHTML(ex.output)}</pre>
-          </div>
+          <details class="output-check">
+            <summary>Check your prediction: show expected output</summary>
+            <div class="output-block">
+              <div class="output-label">Expected output</div>
+              <pre>${escapeHTML(ex.output)}</pre>
+            </div>
+          </details>
         `;
       }
     });
@@ -3314,12 +3328,13 @@ function updateRightPanel(topic) {
   if (DOM.rpToc) {
     DOM.rpToc.innerHTML = '';
     const sections = [
-      { id: 'sec-title', label: 'Top' },
-      { id: 'sec-definition', label: 'Definition' },
-      { id: 'sec-explanation', label: 'Book Notes' },
-      { id: 'sec-keypoints', label: 'Key Rules' },
-      { id: 'sec-examples', label: 'Python Code' },
-      { id: 'sec-notes', label: 'Important Note' }
+      { id: 'sec-title', label: 'Lesson start' },
+      { id: 'sec-intro', label: 'In this lesson' },
+      { id: 'sec-definition', label: 'Core idea' },
+      { id: 'sec-explanation', label: 'How it works' },
+      { id: 'sec-keypoints', label: 'Key takeaways' },
+      { id: 'sec-examples', label: 'Worked examples' },
+      { id: 'sec-notes', label: 'Remember' }
     ];
 
     sections.forEach(s => {
@@ -3520,18 +3535,22 @@ function executeSearch(query) {
     let score = 0;
     const tTitle = topic.title.toLowerCase();
     const chTitle = topic.chapterTitle.toLowerCase();
-    const def = (topic.content.definition || '').toLowerCase();
-    const exp = (topic.content.explanation || '').toLowerCase();
+    const searchableText = [
+      topic.content.intro,
+      topic.content.definition,
+      topic.content.explanation,
+      ...(topic.content.keyPoints || []),
+      topic.content.notes?.text
+    ].filter(Boolean).join(' ').toLowerCase();
 
     // Check matches
     if (tTitle.includes(q)) score += 10;
     if (chTitle.includes(q)) score += 5;
-    if (def.includes(q)) score += 3;
-    if (exp.includes(q)) score += 2;
+    if (searchableText.includes(q)) score += 3;
 
     if (topic.content.codeExamples) {
       topic.content.codeExamples.forEach(ce => {
-        if (ce.code.toLowerCase().includes(q)) score += 4;
+        if (ce.title.toLowerCase().includes(q) || ce.code.toLowerCase().includes(q)) score += 4;
       });
     }
 
@@ -3661,39 +3680,57 @@ function showWelcomeScreen() {
   if (!DOM.contentWrap) return;
 
   const currentVisits = currentViewCountDisplay;
+  const learningPaths = [
+    { chapterIndex: 0, label: 'Start here', description: 'Install Python and write your first program.' },
+    { chapterIndex: 5, label: 'Make decisions', description: 'Use conditions and loops to control a program.' },
+    { chapterIndex: 10, label: 'Work with collections', description: 'Store, find, and transform related values.' },
+    { chapterIndex: 17, label: 'Build with classes', description: 'Model objects and learn object-oriented Python.' }
+  ];
 
   DOM.contentWrap.innerHTML = `
     <div class="welcome-screen content-anim" id="welcomeScreen">
-      <div class="welcome-icon">
-        <svg width="72" height="72" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#F5E65A" opacity="0.1"/>
-          <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="9" font-family="JetBrains Mono" fill="#F5E65A" font-weight="700">Py</text>
-        </svg>
-      </div>
-      <h1 class="welcome-title">PYTHON</h1>
-      <p class="welcome-subtitle">Interactive Programming Notes</p>
-      <p class="welcome-desc">Interactive Digital Programming Textbook</p>
-      
-      <!-- Website View Counter Badge on Homepage -->
-      <div class="welcome-visitor-badge" id="welcomeVisitorBadge" title="Total unique visitor sessions">
-        <span class="badge-pulse"></span>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-          <circle cx="12" cy="12" r="3"></circle>
-        </svg>
-        <span class="visitor-badge-text">Total Reader Visits: <strong id="visitorCountBadgeNum">${currentVisits}</strong></span>
-      </div>
+      <section class="welcome-hero">
+        <span class="welcome-eyebrow">A free, self-paced Python textbook</span>
+        <h1 class="welcome-title">Learn Python,<br />one clear step at a time.</h1>
+        <p class="welcome-subtitle">Understand the idea, read a clear explanation, then learn by tracing real Python examples.</p>
+        <p class="welcome-desc">All ${ALL_TOPICS.length} lessons are written to stand on their own. No videos required.</p>
+        <div class="welcome-actions">
+          <button class="btn-primary" id="startReadingBtn">Start learning <span aria-hidden="true">→</span></button>
+          <button class="btn-ghost" id="continueBtn" style="display:none">Continue learning</button>
+        </div>
+        <div class="welcome-stats" aria-label="Book contents">
+          <div class="stat"><span class="stat-num">${BOOK_DATA.length}</span><span class="stat-label">Chapters</span></div>
+          <div class="stat"><span class="stat-num">${ALL_TOPICS.length}</span><span class="stat-label">Lessons</span></div>
+          <div class="stat"><span class="stat-num">${TOTAL_CODE_EXAMPLES}</span><span class="stat-label">Worked examples</span></div>
+          <div class="stat stat-visits"><span class="stat-num" id="statVisitsNum">${currentVisits}</span><span class="stat-label">Reader visits</span></div>
+        </div>
+        <div class="welcome-visitor-badge" id="welcomeVisitorBadge" title="Total reader visits">
+          <span class="badge-pulse"></span>
+          <span class="visitor-badge-text">Readers have visited <strong id="visitorCountBadgeNum">${currentVisits}</strong> times</span>
+        </div>
+      </section>
 
-      <div class="welcome-actions">
-        <button class="btn-primary" id="startReadingBtn">Start Reading →</button>
-        <button class="btn-ghost" id="continueBtn" style="display:none">Continue Reading</button>
-      </div>
-      <div class="welcome-stats">
-        <div class="stat"><span class="stat-num">28+</span><span class="stat-label">Chapters</span></div>
-        <div class="stat"><span class="stat-num">70+</span><span class="stat-label">Topics</span></div>
-        <div class="stat"><span class="stat-num">100+</span><span class="stat-label">Examples</span></div>
-        <div class="stat stat-visits"><span class="stat-num" id="statVisitsNum">${currentVisits}</span><span class="stat-label">Total Visits</span></div>
-      </div>
+      <section class="welcome-paths" aria-labelledby="welcomePathsTitle">
+        <div class="welcome-section-heading">
+          <span class="welcome-eyebrow">Choose your next step</span>
+          <h2 id="welcomePathsTitle">A learning path for every stage</h2>
+        </div>
+        <div class="learning-path-grid">
+          ${learningPaths.map(path => {
+            const chapter = BOOK_DATA[path.chapterIndex];
+            const topic = chapter?.topics[0];
+            if (!chapter || !topic) return '';
+            return `
+              <button class="learning-path-card" type="button" data-topic-id="${topic.id}">
+                <span class="path-label">${path.label} · Chapter ${chapter.num}</span>
+                <strong>${escapeHTML(chapter.title)}</strong>
+                <span class="path-description">${path.description}</span>
+                <span class="path-action" aria-hidden="true">Open lesson →</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+      </section>
     </div>
   `;
 
@@ -3707,6 +3744,9 @@ function showWelcomeScreen() {
       if (ALL_TOPICS.length > 0) navigateToTopic(ALL_TOPICS[0].id);
     });
   }
+  DOM.contentWrap.querySelectorAll('.learning-path-card').forEach(button => {
+    button.addEventListener('click', () => navigateToTopic(button.dataset.topicId));
+  });
 
   updateContinueUI();
 
@@ -3715,8 +3755,8 @@ function showWelcomeScreen() {
   if (DOM.rpToc) {
     DOM.rpToc.innerHTML = `
       <li onclick="window.scrollTo({top:0, behavior:'smooth'})">Overview</li>
-      <li onclick="document.getElementById('welcomeVisitorBadge')?.scrollIntoView({behavior:'smooth'})">Live View Counter</li>
-      <li onclick="document.querySelector('.welcome-stats')?.scrollIntoView({behavior:'smooth'})">Book Stats</li>
+      <li onclick="document.querySelector('.welcome-paths')?.scrollIntoView({behavior:'smooth'})">Learning paths</li>
+      <li onclick="document.querySelector('.welcome-stats')?.scrollIntoView({behavior:'smooth'})">Book contents</li>
     `;
   }
 
@@ -3838,15 +3878,35 @@ function formatText(text) {
 
 function formatParagraphs(text) {
   if (!text) return '';
-  const lines = text.split('\n');
-  return lines.map(line => {
-    line = line.trim();
-    if (!line) return '';
-    if (line.startsWith('- ') || line.startsWith('• ')) {
-      return `<div style="padding-left:16px; margin-bottom:4px; position:relative;"><span style="position:absolute; left:0; color:var(--green);">▸</span>${formatText(line.substring(2))}</div>`;
+  const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
+  const blocks = [];
+
+  for (let index = 0; index < lines.length;) {
+    const line = lines[index];
+    const listType = /^[-•]\s+/.test(line) ? 'bullet' : /^\d+[.)]\s+/.test(line) ? 'numbered' : null;
+
+    if (listType) {
+      const items = [];
+      while (index < lines.length) {
+        const current = lines[index];
+        const matchesList = listType === 'bullet'
+          ? /^[-•]\s+/.test(current)
+          : /^\d+[.)]\s+/.test(current);
+        if (!matchesList) break;
+        items.push(current.replace(listType === 'bullet' ? /^[-•]\s+/ : /^\d+[.)]\s+/, ''));
+        index++;
+      }
+      const tag = listType === 'bullet' ? 'ul' : 'ol';
+      const className = listType === 'bullet' ? 'bullet-list' : 'numbered-list';
+      blocks.push(`<${tag} class="${className}">${items.map(item => `<li>${formatText(item)}</li>`).join('')}</${tag}>`);
+      continue;
     }
-    return `<p style="margin-bottom:12px; line-height:1.75;">${formatText(line)}</p>`;
-  }).join('');
+
+    blocks.push(`<p>${formatText(line)}</p>`);
+    index++;
+  }
+
+  return blocks.join('');
 }
 
 // --- INITIALIZATION ---

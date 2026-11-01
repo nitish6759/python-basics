@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PYTHON – Interactive Programming Notes</title>
+  <title>Learn Python, One Clear Step at a Time</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -156,36 +156,33 @@
       <div class="content-wrap" id="contentWrap">
         <!-- Content is injected here by JS -->
         <div class="welcome-screen" id="welcomeScreen">
-          <div class="welcome-icon">
-            <svg width="72" height="72" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#F5E65A" opacity="0.1"/>
-              <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="9" font-family="JetBrains Mono" fill="#F5E65A" font-weight="700">Py</text>
-            </svg>
-          </div>
-          <h1 class="welcome-title">PYTHON</h1>
-          <p class="welcome-subtitle">Interactive Programming Notes</p>
-          <p class="welcome-desc">Interactive Digital Programming Textbook</p>
-          
-          <!-- Website View Counter Badge on Homepage -->
-          <div class="welcome-visitor-badge" id="welcomeVisitorBadge" title="Total reader visits">
-            <span class="badge-pulse"></span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            <span class="visitor-badge-text">Total Reader Visits: <strong id="visitorCountBadgeNum">Loading...</strong></span>
-          </div>
-
-          <div class="welcome-actions">
-            <button class="btn-primary" id="startReadingBtn">Start Reading →</button>
-            <button class="btn-ghost" id="continueBtn" style="display:none">Continue Reading</button>
-          </div>
-          <div class="welcome-stats">
-            <div class="stat"><span class="stat-num">28+</span><span class="stat-label">Chapters</span></div>
-            <div class="stat"><span class="stat-num">70+</span><span class="stat-label">Topics</span></div>
-            <div class="stat"><span class="stat-num">100+</span><span class="stat-label">Examples</span></div>
-            <div class="stat stat-visits"><span class="stat-num" id="statVisitsNum">Loading...</span><span class="stat-label">Total Visits</span></div>
-          </div>
+          <section class="welcome-hero">
+            <span class="welcome-eyebrow">A free, self-paced Python textbook</span>
+            <h1 class="welcome-title">Learn Python,<br />one clear step at a time.</h1>
+            <p class="welcome-subtitle">Understand the idea, read a clear explanation, then learn by tracing real Python examples.</p>
+            <p class="welcome-desc">All 68 lessons are written to stand on their own. No videos required.</p>
+            <div class="welcome-actions">
+              <button class="btn-primary" id="startReadingBtn">Start learning <span aria-hidden="true">→</span></button>
+              <button class="btn-ghost" id="continueBtn" style="display:none">Continue learning</button>
+            </div>
+            <div class="welcome-stats" aria-label="Book contents">
+              <div class="stat"><span class="stat-num">28</span><span class="stat-label">Chapters</span></div>
+              <div class="stat"><span class="stat-num">68</span><span class="stat-label">Lessons</span></div>
+              <div class="stat"><span class="stat-num">71</span><span class="stat-label">Worked examples</span></div>
+              <div class="stat stat-visits"><span class="stat-num" id="statVisitsNum">Loading...</span><span class="stat-label">Reader visits</span></div>
+            </div>
+            <div class="welcome-visitor-badge" id="welcomeVisitorBadge" title="Total reader visits">
+              <span class="badge-pulse"></span>
+              <span class="visitor-badge-text">Readers have visited <strong id="visitorCountBadgeNum">Loading...</strong> times</span>
+            </div>
+          </section>
+          <section class="welcome-paths">
+            <div class="welcome-section-heading">
+              <span class="welcome-eyebrow">Choose your next step</span>
+              <h2>A learning path for every stage</h2>
+            </div>
+            <p>Browse the chapter list or search for a topic to find your place in the book.</p>
+          </section>
         </div>
       </div>
 
