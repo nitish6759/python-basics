@@ -182,7 +182,7 @@
             <button class="btn-ghost" id="continueBtn" style="display:none">Continue Reading</button>
           </div>
           <div class="welcome-stats">
-            <div class="stat"><span class="stat-num">18+</span><span class="stat-label">Chapters</span></div>
+            <div class="stat"><span class="stat-num">28+</span><span class="stat-label">Chapters</span></div>
             <div class="stat"><span class="stat-num">70+</span><span class="stat-label">Topics</span></div>
             <div class="stat"><span class="stat-num">100+</span><span class="stat-label">Examples</span></div>
             <div class="stat stat-visits"><span class="stat-num" id="statVisitsNum">Loading...</span><span class="stat-label">Total Visits</span></div>
@@ -276,6 +276,54 @@
       </p>
       <p class="auth-status" id="authStatus" role="status"></p>
     </form>
+  </dialog>
+
+  <dialog class="account-dialog" id="accountDialog" aria-labelledby="accountTitle">
+    <section class="account-panel">
+      <button class="auth-close" id="accountCloseButton" type="button" aria-label="Close account">✕</button>
+      <div class="account-profile">
+        <div class="account-avatar" id="accountAvatar" aria-hidden="true">?</div>
+        <div class="account-profile-info">
+          <h2 id="accountTitle">Your account</h2>
+          <p id="accountEmail"></p>
+          <span class="account-provider" id="accountProvider"></span>
+        </div>
+      </div>
+
+      <section class="account-learning" aria-labelledby="accountLearningTitle">
+        <div class="account-section-heading">
+          <h3 id="accountLearningTitle">Your learning</h3>
+          <span id="accountProgressPercent">0%</span>
+        </div>
+        <div class="account-progress-track">
+          <div class="account-progress-fill" id="accountProgressFill"></div>
+        </div>
+        <div class="account-stats">
+          <div class="account-stat">
+            <strong id="accountTopicsRead">0</strong>
+            <span>Topics read</span>
+          </div>
+          <div class="account-stat">
+            <strong id="accountBookmarks">0</strong>
+            <span>Bookmarks</span>
+          </div>
+          <div class="account-stat">
+            <strong id="accountMemberSince">—</strong>
+            <span>Member since</span>
+          </div>
+          <div class="account-stat">
+            <strong id="accountTotalVisits">Loading...</strong>
+            <span>Total visits</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="account-actions">
+        <button class="btn-primary account-continue" id="accountContinueButton" type="button">Start reading</button>
+        <button class="btn-ghost account-bookmarks" id="accountBookmarksButton" type="button">View bookmarks</button>
+        <button class="account-logout" id="accountSignOutButton" type="button">Sign out</button>
+      </div>
+    </section>
   </dialog>
 
   <!-- SCRIPTS -->

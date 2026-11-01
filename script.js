@@ -2550,6 +2550,8 @@ function updateViewCounterDisplays(count) {
   const badgeEl = document.getElementById('visitorCountBadgeNum');
   if (statEl) statEl.textContent = currentViewCountDisplay;
   if (badgeEl) badgeEl.textContent = currentViewCountDisplay;
+  const accountVisitsEl = document.getElementById('accountTotalVisits');
+  if (accountVisitsEl) accountVisitsEl.textContent = currentViewCountDisplay;
 }
 
 // --- 2. DARK & LIGHT THEME ENGINE ---
@@ -2683,7 +2685,22 @@ const DOM = {
   authSwitchPrompt: document.getElementById('authSwitchPrompt'),
   authSwitchButton: document.getElementById('authSwitchButton'),
   authCloseButton: document.getElementById('authCloseButton'),
-  authStatus: document.getElementById('authStatus')
+  authStatus: document.getElementById('authStatus'),
+  accountDialog: document.getElementById('accountDialog'),
+  accountTitle: document.getElementById('accountTitle'),
+  accountCloseButton: document.getElementById('accountCloseButton'),
+  accountAvatar: document.getElementById('accountAvatar'),
+  accountEmail: document.getElementById('accountEmail'),
+  accountProvider: document.getElementById('accountProvider'),
+  accountProgressPercent: document.getElementById('accountProgressPercent'),
+  accountProgressFill: document.getElementById('accountProgressFill'),
+  accountTopicsRead: document.getElementById('accountTopicsRead'),
+  accountBookmarks: document.getElementById('accountBookmarks'),
+  accountMemberSince: document.getElementById('accountMemberSince'),
+  accountTotalVisits: document.getElementById('accountTotalVisits'),
+  accountContinueButton: document.getElementById('accountContinueButton'),
+  accountBookmarksButton: document.getElementById('accountBookmarksButton'),
+  accountSignOutButton: document.getElementById('accountSignOutButton')
 };
 
 // --- AUTHENTICATION & ACCOUNT SYNC ---
@@ -2737,10 +2754,37 @@ function refreshLearningUI() {
   updateProgressUI();
   updateContinueUI();
   renderRecents();
+  renderAccountUI();
   ALL_TOPICS.forEach(topic => {
     const link = document.getElementById(`nav-topic-${topic.id}`);
     if (link) link.classList.toggle('bookmarked', bookmarks.has(topic.id));
   });
+}
+
+function renderAccountUI() {
+  if (!currentUser || !DOM.accountDialog) return;
+  const metadata = currentUser.user_metadata || {};
+  const email = currentUser.email || 'Signed in with Google';
+  const displayName = metadata.full_name || metadata.name || email.split('@')[0];
+  const provider = currentUser.app_metadata?.provider === 'google' ? 'Google account' : 'Email account';
+  const progress = ALL_TOPICS.length
+    ? Math.round((visitedTopics.size / ALL_TOPICS.length) * 100)
+    : 0;
+  const memberSince = currentUser.created_at
+    ? new Date(currentUser.created_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
+    : '—';
+
+  DOM.accountTitle.textContent = displayName;
+  DOM.accountAvatar.textContent = displayName.trim().charAt(0).toUpperCase() || '?';
+  DOM.accountEmail.textContent = email;
+  DOM.accountProvider.textContent = provider;
+  DOM.accountProgressPercent.textContent = `${progress}%`;
+  DOM.accountProgressFill.style.width = `${progress}%`;
+  DOM.accountTopicsRead.textContent = visitedTopics.size.toLocaleString();
+  DOM.accountBookmarks.textContent = bookmarks.size.toLocaleString();
+  DOM.accountMemberSince.textContent = memberSince;
+  DOM.accountTotalVisits.textContent = currentViewCountDisplay;
+  DOM.accountContinueButton.textContent = lastTopicId ? 'Continue reading' : 'Start reading';
 }
 
 function setAuthMode(mode) {
@@ -2839,14 +2883,17 @@ async function handleAuthStateChange(session) {
 
 function initAuth() {
   DOM.authButton.addEventListener('click', () => {
+    if (currentUser) {
+      renderAccountUI();
+      DOM.accountDialog.showModal();
+      return;
+    }
     if (!supabaseClient) {
       showToast('Set the Supabase URL and publishable key in supabase-config.js.', 'error');
       return;
     }
-    if (!currentUser) {
-      setAuthMode('signin');
-      DOM.authDialog.showModal();
-    }
+    setAuthMode('signin');
+    DOM.authDialog.showModal();
   });
   DOM.authSignOutButton.addEventListener('click', async () => {
     try {
@@ -2859,6 +2906,17 @@ function initAuth() {
     }
   });
   DOM.authCloseButton.addEventListener('click', () => DOM.authDialog.close());
+  DOM.accountCloseButton.addEventListener('click', () => DOM.accountDialog.close());
+  DOM.accountContinueButton.addEventListener('click', () => {
+    DOM.accountDialog.close();
+    const topic = TOPIC_MAP.get(lastTopicId) || ALL_TOPICS[0];
+    if (topic) navigateToTopic(topic.id);
+  });
+  DOM.accountBookmarksButton.addEventListener('click', () => {
+    DOM.accountDialog.close();
+    openBookmarksPanel();
+  });
+  DOM.accountSignOutButton.addEventListener('click', () => DOM.authSignOutButton.click());
   DOM.authSwitchButton.addEventListener('click', () => {
     setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
   });
@@ -3637,7 +3695,7 @@ function showWelcomeScreen() {
         <button class="btn-ghost" id="continueBtn" style="display:none">Continue Reading</button>
       </div>
       <div class="welcome-stats">
-        <div class="stat"><span class="stat-num">18+</span><span class="stat-label">Chapters</span></div>
+        <div class="stat"><span class="stat-num">28+</span><span class="stat-label">Chapters</span></div>
         <div class="stat"><span class="stat-num">70+</span><span class="stat-label">Topics</span></div>
         <div class="stat"><span class="stat-num">100+</span><span class="stat-label">Examples</span></div>
         <div class="stat stat-visits"><span class="stat-num" id="statVisitsNum">${currentVisits}</span><span class="stat-label">Total Visits</span></div>

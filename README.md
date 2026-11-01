@@ -24,7 +24,7 @@ Instead of reading static notes, users can explore content with a clean and feat
 
 | Feature           | Description |
 | ----------------- | ----------- |
-| Chapters          | 18+         |
+| Chapters          | 28+         |
 | Topics            | 70+         |
 | Examples          | 100+        |
 | Progress Tracking | Yes         |
