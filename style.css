@@ -766,7 +766,6 @@ code { font-family: var(--font-mono); font-size: 13px; color: var(--green); back
   transition: var(--transition);
 }
 .auth-button:hover { border-color: var(--green); color: var(--green); background: var(--green-glow); }
-.auth-signout { color: var(--text-muted); }
 .auth-dialog {
   width: min(420px, calc(100% - 32px)); padding: 0;
   color: var(--text-primary); background: var(--bg-sidebar);
@@ -829,7 +828,7 @@ code { font-family: var(--font-mono); font-size: 13px; color: var(--green); back
 .account-section-heading span { color: var(--green); font: 600 13px var(--font-mono); }
 .account-progress-track { height: 7px; margin: 14px 0 18px; overflow: hidden; background: var(--bg-hover); border-radius: 10px; }
 .account-progress-fill { width: 0; height: 100%; background: var(--green); border-radius: inherit; transition: width 0.25s ease; }
-.account-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.account-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .account-stat { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .account-stat strong { overflow: hidden; font: 600 16px var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
 .account-stat span { color: var(--text-muted); font-size: 10px; }

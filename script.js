@@ -2550,8 +2550,6 @@ function updateViewCounterDisplays(count) {
   const badgeEl = document.getElementById('visitorCountBadgeNum');
   if (statEl) statEl.textContent = currentViewCountDisplay;
   if (badgeEl) badgeEl.textContent = currentViewCountDisplay;
-  const accountVisitsEl = document.getElementById('accountTotalVisits');
-  if (accountVisitsEl) accountVisitsEl.textContent = currentViewCountDisplay;
 }
 
 // --- 2. DARK & LIGHT THEME ENGINE ---
@@ -2674,7 +2672,6 @@ const DOM = {
   loadingOverlay: document.getElementById('loadingOverlay'),
   toast: document.getElementById('toast'),
   authButton: document.getElementById('authButton'),
-  authSignOutButton: document.getElementById('authSignOutButton'),
   authDialog: document.getElementById('authDialog'),
   authForm: document.getElementById('authForm'),
   authTitle: document.getElementById('authTitle'),
@@ -2697,7 +2694,6 @@ const DOM = {
   accountTopicsRead: document.getElementById('accountTopicsRead'),
   accountBookmarks: document.getElementById('accountBookmarks'),
   accountMemberSince: document.getElementById('accountMemberSince'),
-  accountTotalVisits: document.getElementById('accountTotalVisits'),
   accountContinueButton: document.getElementById('accountContinueButton'),
   accountBookmarksButton: document.getElementById('accountBookmarksButton'),
   accountSignOutButton: document.getElementById('accountSignOutButton')
@@ -2783,7 +2779,6 @@ function renderAccountUI() {
   DOM.accountTopicsRead.textContent = visitedTopics.size.toLocaleString();
   DOM.accountBookmarks.textContent = bookmarks.size.toLocaleString();
   DOM.accountMemberSince.textContent = memberSince;
-  DOM.accountTotalVisits.textContent = currentViewCountDisplay;
   DOM.accountContinueButton.textContent = lastTopicId ? 'Continue reading' : 'Start reading';
 }
 
@@ -2799,11 +2794,11 @@ function setAuthMode(mode) {
 }
 
 function updateAuthUI() {
-  if (!DOM.authButton || !DOM.authSignOutButton) return;
+  if (!DOM.authButton) return;
   DOM.authButton.textContent = currentUser ? 'Account' : 'Sign in';
   DOM.authButton.title = currentUser ? `Signed in as ${currentUser.email}` : 'Sign in to sync progress';
-  DOM.authSignOutButton.style.display = currentUser ? 'inline-flex' : 'none';
   if (currentUser && DOM.authDialog.open) DOM.authDialog.close();
+  if (!currentUser && DOM.accountDialog.open) DOM.accountDialog.close();
 }
 
 function restoreGuestLearningData() {
@@ -2895,7 +2890,7 @@ function initAuth() {
     setAuthMode('signin');
     DOM.authDialog.showModal();
   });
-  DOM.authSignOutButton.addEventListener('click', async () => {
+  DOM.accountSignOutButton.addEventListener('click', async () => {
     try {
       const { error } = await supabaseClient.auth.signOut();
       if (error) throw error;
@@ -2916,7 +2911,6 @@ function initAuth() {
     DOM.accountDialog.close();
     openBookmarksPanel();
   });
-  DOM.accountSignOutButton.addEventListener('click', () => DOM.authSignOutButton.click());
   DOM.authSwitchButton.addEventListener('click', () => {
     setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
   });
