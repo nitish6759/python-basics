@@ -65,6 +65,20 @@ The site uses Supabase email/password authentication and stores each signed-in r
 
 First sign-in merges browser-saved bookmarks and progress into the account. After sign-in, learning data is kept separately for each account on that browser and synced to Supabase.
 
+### Google sign-in
+
+Google sign-in is optional and does not require buying a domain. Configure it before using the **Continue with Google** button:
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/) and create or select a project. In **Google Auth Platform**, configure the app branding and audience. While the app is in testing mode, add the Google accounts that should be able to sign in as test users.
+2. Open **Google Auth Platform → Clients → Create client**. Choose **Web application**. Under **Authorized JavaScript origins**, add the origin where this site runs (for local testing, add the local origin such as `http://localhost:8000`; for deployment, add your site's origin, without a path).
+3. In **Authorized redirect URIs**, add the Supabase callback URL shown on the Google provider settings page. For this project it is `https://gomnnjllhzbovurlirlg.supabase.co/auth/v1/callback`.
+4. Create the client and copy its **Client ID** and **Client secret**.
+5. In Supabase, open **Authentication → Sign In / Providers → Google**, enable Google, paste the Client ID and Client secret, and save.
+6. In Supabase **Authentication → URL Configuration → Redirect URLs**, add the site's full origin (for example, `http://localhost:8000` during local testing and your deployed site origin). Google sign-in returns to the origin that started the sign-in.
+7. Open the site, click **Sign in → Continue with Google**, and choose a Google account. Google handles account verification; app email confirmation settings do not need to send a confirmation email for Google sign-in.
+
+Do not put the Google Client secret in this repository or in `supabase-config.js`; keep it only in the Supabase provider settings. Google's OAuth consent screen may show a testing warning while the app remains in testing mode.
+
 ## 🛠️ Upcoming Features
 
 - [x] User Login and Registration

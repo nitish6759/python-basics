@@ -2679,6 +2679,7 @@ const DOM = {
   authEmail: document.getElementById('authEmail'),
   authPassword: document.getElementById('authPassword'),
   authSubmitButton: document.getElementById('authSubmitButton'),
+  authGoogleButton: document.getElementById('authGoogleButton'),
   authSwitchPrompt: document.getElementById('authSwitchPrompt'),
   authSwitchButton: document.getElementById('authSwitchButton'),
   authCloseButton: document.getElementById('authCloseButton'),
@@ -2860,6 +2861,21 @@ function initAuth() {
   DOM.authCloseButton.addEventListener('click', () => DOM.authDialog.close());
   DOM.authSwitchButton.addEventListener('click', () => {
     setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
+  });
+  DOM.authGoogleButton.addEventListener('click', async () => {
+    DOM.authGoogleButton.disabled = true;
+    DOM.authStatus.textContent = '';
+    try {
+      const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin }
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.error('Google sign-in failed:', error);
+      DOM.authStatus.textContent = error.message || 'Google sign-in failed. Please try again.';
+      DOM.authGoogleButton.disabled = false;
+    }
   });
   DOM.authForm.addEventListener('submit', async event => {
     event.preventDefault();

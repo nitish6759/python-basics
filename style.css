@@ -786,6 +786,16 @@ code { font-family: var(--font-mono); font-size: 13px; color: var(--green); back
 .auth-form input:focus { outline: 1px solid var(--green); border-color: var(--green); }
 .auth-submit { margin-top: 8px; }
 .auth-submit:disabled { cursor: wait; opacity: 0.65; }
+.auth-divider { display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-size: 11px; }
+.auth-divider::before, .auth-divider::after { content: ""; height: 1px; flex: 1; background: var(--border); }
+.auth-google {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 42px; color: var(--text-primary); background: var(--bg-main);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font: 600 13px var(--font-body); cursor: pointer; transition: var(--transition);
+}
+.auth-google:hover { border-color: var(--green); background: var(--green-glow); }
+.auth-google:disabled { cursor: wait; opacity: 0.65; }
 .auth-close {
   position: absolute; top: 14px; right: 14px;
   color: var(--text-muted); background: none; border: 0; cursor: pointer;
