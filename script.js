@@ -2597,25 +2597,29 @@ let currentTopicId = null;
 let bookmarks = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKMARKS) || '[]'));
 let visitedTopics = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITED) || '[]'));
 let recentTopics = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENTS) || '[]');
+let lastTopicId = localStorage.getItem(STORAGE_KEYS.LAST_TOPIC);
 
 function saveBookmarks() {
-  localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify([...bookmarks]));
+  saveLearningDataLocally();
   updateBookmarkUI();
+  scheduleLearningDataSync();
 }
 
 function saveVisited() {
-  localStorage.setItem(STORAGE_KEYS.VISITED, JSON.stringify([...visitedTopics]));
+  saveLearningDataLocally();
   updateProgressUI();
+  scheduleLearningDataSync();
 }
 
 function saveRecents(topicId) {
   recentTopics = [topicId, ...recentTopics.filter(id => id !== topicId)].slice(0, 5);
-  localStorage.setItem(STORAGE_KEYS.RECENTS, JSON.stringify(recentTopics));
+  localStorage.setItem(getLearningStorageKey(STORAGE_KEYS.RECENTS), JSON.stringify(recentTopics));
   renderRecents();
 }
 
 function saveLastTopic(topicId) {
-  localStorage.setItem(STORAGE_KEYS.LAST_TOPIC, topicId);
+  lastTopicId = topicId;
+  localStorage.setItem(getLearningStorageKey(STORAGE_KEYS.LAST_TOPIC), topicId);
   updateContinueUI();
 }
 
@@ -2666,8 +2670,239 @@ const DOM = {
   printBtn: document.getElementById('printBtn'),
   scrollTop: document.getElementById('scrollTop'),
   loadingOverlay: document.getElementById('loadingOverlay'),
-  toast: document.getElementById('toast')
+  toast: document.getElementById('toast'),
+  authButton: document.getElementById('authButton'),
+  authSignOutButton: document.getElementById('authSignOutButton'),
+  authDialog: document.getElementById('authDialog'),
+  authForm: document.getElementById('authForm'),
+  authTitle: document.getElementById('authTitle'),
+  authEmail: document.getElementById('authEmail'),
+  authPassword: document.getElementById('authPassword'),
+  authSubmitButton: document.getElementById('authSubmitButton'),
+  authSwitchPrompt: document.getElementById('authSwitchPrompt'),
+  authSwitchButton: document.getElementById('authSwitchButton'),
+  authCloseButton: document.getElementById('authCloseButton'),
+  authStatus: document.getElementById('authStatus')
 };
+
+// --- AUTHENTICATION & ACCOUNT SYNC ---
+let supabaseClient = null;
+let currentUser = null;
+let loadedUserId = null;
+let authMode = 'signin';
+let learningSyncTimer = null;
+let learningSyncQueue = Promise.resolve();
+let authStateVersion = 0;
+
+function getLearningStorageKey(key, userId = currentUser?.id) {
+  return userId ? `${key}:user:${userId}` : key;
+}
+
+function saveLearningDataLocally() {
+  localStorage.setItem(getLearningStorageKey(STORAGE_KEYS.BOOKMARKS), JSON.stringify([...bookmarks]));
+  localStorage.setItem(getLearningStorageKey(STORAGE_KEYS.VISITED), JSON.stringify([...visitedTopics]));
+  localStorage.setItem(getLearningStorageKey(STORAGE_KEYS.RECENTS), JSON.stringify(recentTopics));
+  if (lastTopicId) {
+    localStorage.setItem(getLearningStorageKey(STORAGE_KEYS.LAST_TOPIC), lastTopicId);
+  }
+}
+
+function scheduleLearningDataSync() {
+  if (!supabaseClient || !currentUser || loadedUserId !== currentUser.id) return;
+  clearTimeout(learningSyncTimer);
+  learningSyncTimer = setTimeout(() => {
+    const userId = currentUser.id;
+    const data = {
+      user_id: userId,
+      bookmarks: [...bookmarks],
+      visited_topics: [...visitedTopics],
+      updated_at: new Date().toISOString()
+    };
+    learningSyncQueue = learningSyncQueue.then(async () => {
+      if (currentUser?.id !== userId) return;
+      const { error } = await supabaseClient
+        .from('user_learning_data')
+        .upsert(data, { onConflict: 'user_id' });
+      if (error) throw error;
+    }).catch(error => {
+      console.error('Unable to sync learning data:', error);
+      showToast('Unable to sync your progress. Please try again.', 'error');
+    });
+  }, 400);
+}
+
+function refreshLearningUI() {
+  updateBookmarkUI();
+  updateProgressUI();
+  updateContinueUI();
+  renderRecents();
+  ALL_TOPICS.forEach(topic => {
+    const link = document.getElementById(`nav-topic-${topic.id}`);
+    if (link) link.classList.toggle('bookmarked', bookmarks.has(topic.id));
+  });
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  const isSignUp = mode === 'signup';
+  DOM.authTitle.textContent = isSignUp ? 'Create an account' : 'Sign in';
+  DOM.authSubmitButton.textContent = isSignUp ? 'Create account' : 'Sign in';
+  DOM.authSwitchPrompt.textContent = isSignUp ? 'Already have an account?' : 'New here?';
+  DOM.authSwitchButton.textContent = isSignUp ? 'Sign in' : 'Create an account';
+  DOM.authPassword.autocomplete = isSignUp ? 'new-password' : 'current-password';
+  DOM.authStatus.textContent = '';
+}
+
+function updateAuthUI() {
+  if (!DOM.authButton || !DOM.authSignOutButton) return;
+  DOM.authButton.textContent = currentUser ? 'Account' : 'Sign in';
+  DOM.authButton.title = currentUser ? `Signed in as ${currentUser.email}` : 'Sign in to sync progress';
+  DOM.authSignOutButton.style.display = currentUser ? 'inline-flex' : 'none';
+  if (currentUser && DOM.authDialog.open) DOM.authDialog.close();
+}
+
+function restoreGuestLearningData() {
+  bookmarks = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKMARKS) || '[]'));
+  visitedTopics = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITED) || '[]'));
+  recentTopics = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENTS) || '[]');
+  lastTopicId = localStorage.getItem(STORAGE_KEYS.LAST_TOPIC);
+  refreshLearningUI();
+}
+
+async function loadAccountLearningData(user, version, mergeGuestData) {
+  const guestBookmarks = new Set(bookmarks);
+  const guestVisitedTopics = new Set(visitedTopics);
+  const guestRecentTopics = [...recentTopics];
+  const guestLastTopicId = lastTopicId;
+  const bookmarkKey = getLearningStorageKey(STORAGE_KEYS.BOOKMARKS, user.id);
+  const visitedKey = getLearningStorageKey(STORAGE_KEYS.VISITED, user.id);
+  const hasLocalAccountData = localStorage.getItem(bookmarkKey) !== null
+    || localStorage.getItem(visitedKey) !== null;
+  const localBookmarks = new Set(JSON.parse(localStorage.getItem(bookmarkKey) || '[]'));
+  const localVisitedTopics = new Set(JSON.parse(localStorage.getItem(visitedKey) || '[]'));
+  const { data, error } = await supabaseClient
+    .from('user_learning_data')
+    .select('bookmarks, visited_topics')
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (version !== authStateVersion) return;
+
+  bookmarks = new Set(data?.bookmarks || []);
+  visitedTopics = new Set(data?.visited_topics || []);
+  localBookmarks.forEach(id => bookmarks.add(id));
+  localVisitedTopics.forEach(id => visitedTopics.add(id));
+  if (mergeGuestData) {
+    guestBookmarks.forEach(id => bookmarks.add(id));
+    guestVisitedTopics.forEach(id => visitedTopics.add(id));
+  }
+
+  recentTopics = JSON.parse(localStorage.getItem(
+    getLearningStorageKey(STORAGE_KEYS.RECENTS, user.id)
+  ) || '[]');
+  lastTopicId = localStorage.getItem(getLearningStorageKey(STORAGE_KEYS.LAST_TOPIC, user.id));
+  if (mergeGuestData) {
+    if (!recentTopics.length) recentTopics = guestRecentTopics;
+    if (!lastTopicId) lastTopicId = guestLastTopicId;
+  }
+
+  saveLearningDataLocally();
+  currentUser = user;
+  loadedUserId = user.id;
+  refreshLearningUI();
+  if (!data || hasLocalAccountData || mergeGuestData) scheduleLearningDataSync();
+}
+
+async function handleAuthStateChange(session) {
+  const version = ++authStateVersion;
+  const nextUser = session?.user || null;
+  const previousUserId = currentUser?.id || null;
+  currentUser = nextUser;
+  updateAuthUI();
+
+  if (!nextUser) {
+    if (loadedUserId) restoreGuestLearningData();
+    loadedUserId = null;
+    return;
+  }
+  if (loadedUserId === nextUser.id) return;
+
+  try {
+    await loadAccountLearningData(nextUser, version, !previousUserId);
+  } catch (error) {
+    console.error('Unable to load account learning data:', error);
+    showToast('Unable to load your saved progress. Check the Supabase setup.', 'error');
+  }
+}
+
+function initAuth() {
+  DOM.authButton.addEventListener('click', () => {
+    if (!supabaseClient) {
+      showToast('Set the Supabase URL and publishable key in supabase-config.js.', 'error');
+      return;
+    }
+    if (!currentUser) {
+      setAuthMode('signin');
+      DOM.authDialog.showModal();
+    }
+  });
+  DOM.authSignOutButton.addEventListener('click', async () => {
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) throw error;
+      showToast('You have signed out.', 'info');
+    } catch (error) {
+      console.error('Unable to sign out:', error);
+      showToast(error.message || 'Unable to sign out. Please try again.', 'error');
+    }
+  });
+  DOM.authCloseButton.addEventListener('click', () => DOM.authDialog.close());
+  DOM.authSwitchButton.addEventListener('click', () => {
+    setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
+  });
+  DOM.authForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    const email = DOM.authEmail.value.trim();
+    const password = DOM.authPassword.value;
+    DOM.authSubmitButton.disabled = true;
+    DOM.authStatus.textContent = '';
+    try {
+      const result = authMode === 'signup'
+        ? await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: window.location.origin }
+        })
+        : await supabaseClient.auth.signInWithPassword({ email, password });
+      if (result.error) throw result.error;
+      if (authMode === 'signup' && !result.data.session) {
+        DOM.authStatus.textContent = 'Check your email to confirm your account, then sign in.';
+      } else {
+        DOM.authDialog.close();
+        DOM.authForm.reset();
+        showToast(authMode === 'signup' ? 'Account created.' : 'Signed in.', 'success');
+      }
+    } catch (error) {
+      console.error('Authentication failed:', error);
+      DOM.authStatus.textContent = error.message || 'Authentication failed. Please try again.';
+    } finally {
+      DOM.authSubmitButton.disabled = false;
+    }
+  });
+
+  const config = window.SUPABASE_CONFIG;
+  if (!window.supabase?.createClient || !config?.url || !config?.publishableKey) {
+    return;
+  }
+
+  supabaseClient = window.supabase.createClient(config.url, config.publishableKey);
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    window.setTimeout(() => {
+      void handleAuthStateChange(session);
+    }, 0);
+  });
+}
 
 // --- TOAST NOTIFICATION ---
 let toastTimer = null;
@@ -3158,7 +3393,7 @@ function updateProgressUI() {
 
 // Continue Reading card
 function updateContinueUI() {
-  const lastId = localStorage.getItem(STORAGE_KEYS.LAST_TOPIC);
+  const lastId = lastTopicId;
   const t = TOPIC_MAP.get(lastId);
 
   if (t && DOM.sbContinue && DOM.sbContinueTopic) {
@@ -3550,6 +3785,7 @@ function formatParagraphs(text) {
 function init() {
   initTheme();
   initViewCounter();
+  initAuth();
   renderSidebar();
   updateBookmarkUI();
   updateProgressUI();

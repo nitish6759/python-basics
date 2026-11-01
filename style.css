@@ -756,6 +756,47 @@ code { font-family: var(--font-mono); font-size: 13px; color: var(--green); back
 .toast.success { border-color: rgba(138,255,181,0.5); color: var(--green); }
 .toast.error { border-color: rgba(255,105,105,0.5); color: var(--red); }
 
+/* ===================== AUTHENTICATION ===================== */
+.auth-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 34px; max-width: 180px; padding: 0 10px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  background: none; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text-secondary); font: 500 12px var(--font-body); cursor: pointer;
+  transition: var(--transition);
+}
+.auth-button:hover { border-color: var(--green); color: var(--green); background: var(--green-glow); }
+.auth-signout { color: var(--text-muted); }
+.auth-dialog {
+  width: min(420px, calc(100% - 32px)); padding: 0;
+  color: var(--text-primary); background: var(--bg-sidebar);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.auth-dialog::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); }
+.auth-form { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 28px; }
+.auth-form h2 { margin-right: 28px; font-size: 21px; }
+.auth-description { margin: 0 0 8px; color: var(--text-muted); font-size: 13px; }
+.auth-form label { color: var(--text-secondary); font-size: 12px; }
+.auth-form input {
+  width: 100%; padding: 10px 12px; color: var(--text-primary);
+  background: var(--bg-main); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font: 14px var(--font-body);
+}
+.auth-form input:focus { outline: 1px solid var(--green); border-color: var(--green); }
+.auth-submit { margin-top: 8px; }
+.auth-submit:disabled { cursor: wait; opacity: 0.65; }
+.auth-close {
+  position: absolute; top: 14px; right: 14px;
+  color: var(--text-muted); background: none; border: 0; cursor: pointer;
+}
+.auth-switch { margin-top: 8px; color: var(--text-muted); font-size: 12px; text-align: center; }
+.auth-switch button {
+  padding: 0; color: var(--green); background: none; border: 0;
+  font: inherit; cursor: pointer;
+}
+.auth-status { min-height: 18px; color: var(--red); font-size: 12px; text-align: center; }
+
 /* ===================== LOADING ===================== */
 .loading-overlay {
   position: fixed; inset: 0; background: rgba(8,10,9,0.8);

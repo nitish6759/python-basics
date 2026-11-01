@@ -51,6 +51,9 @@
     </div>
 
     <div class="header-right">
+      <button class="auth-button" id="authButton" type="button">Sign in</button>
+      <button class="auth-button auth-signout" id="authSignOutButton" type="button" style="display:none">Sign out</button>
+
       <!-- Dark / Light Theme Mode Toggle -->
       <button class="hdr-btn" id="themeToggle" title="Switch to Light Mode" aria-label="Toggle dark and light theme">
         <!-- Sun icon (shown in dark mode) -->
@@ -247,10 +250,30 @@
   <!-- TOAST NOTIFICATION -->
   <div class="toast" id="toast"></div>
 
+  <dialog class="auth-dialog" id="authDialog" aria-labelledby="authTitle">
+    <form class="auth-form" id="authForm">
+      <button class="auth-close" id="authCloseButton" type="button" aria-label="Close">✕</button>
+      <h2 id="authTitle">Sign in</h2>
+      <p class="auth-description">Sign in to sync your reading progress and bookmarks.</p>
+      <label for="authEmail">Email</label>
+      <input id="authEmail" name="email" type="email" autocomplete="email" required />
+      <label for="authPassword">Password</label>
+      <input id="authPassword" name="password" type="password" autocomplete="current-password" minlength="6" required />
+      <button class="btn-primary auth-submit" id="authSubmitButton" type="submit">Sign in</button>
+      <p class="auth-switch">
+        <span id="authSwitchPrompt">New here?</span>
+        <button id="authSwitchButton" type="button">Create an account</button>
+      </p>
+      <p class="auth-status" id="authStatus" role="status"></p>
+    </form>
+  </dialog>
+
   <!-- SCRIPTS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

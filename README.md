@@ -17,8 +17,8 @@ Instead of reading static notes, users can explore content with a clean and feat
 - **🌙 Dark & Light Mode:** Switch between dark and normal themes.
 - **📖 Interactive Reading:** Clean and structured interface for a better learning experience.
 - **👁️ View Counter:** Displays website view counts.
+- **🔐 User Authentication:** Sign in with email to sync reading progress and bookmarks across devices.
 - **📱 User-Friendly Interface:** Simple navigation and organized content.
-- **🔐 User Authentication (Coming Soon):** Login and signup functionality planned for future updates.
 
 ## 🚀 Website Highlights
 
@@ -32,10 +32,43 @@ Instead of reading static notes, users can explore content with a clean and feat
 | Search            | Yes         |
 | Theme Switching   | Yes         |
 
+## 🔐 Supabase Authentication Setup
+
+The site uses Supabase email/password authentication and stores each signed-in reader's bookmarks and completed topics in Supabase. Reading remains public; without signing in, progress and bookmarks continue to be saved in the browser.
+
+1. Create a Supabase project and enable email authentication.
+2. In `supabase-config.js`, set `url` to the project's URL and `publishableKey` to its publishable (or legacy `anon`) key. These browser credentials are public; **never use a service-role key** in this file.
+3. In the Supabase SQL Editor, run:
+
+   ```sql
+   create table if not exists public.user_learning_data (
+     user_id uuid primary key references auth.users(id) on delete cascade,
+     bookmarks text[] not null default '{}',
+     visited_topics text[] not null default '{}',
+     updated_at timestamptz not null default now()
+   );
+
+   alter table public.user_learning_data enable row level security;
+   grant select, insert, update, delete
+     on public.user_learning_data to authenticated;
+
+   drop policy if exists "Readers can manage their own learning data"
+     on public.user_learning_data;
+   create policy "Readers can manage their own learning data"
+     on public.user_learning_data
+     for all
+     using (auth.uid() = user_id)
+     with check (auth.uid() = user_id);
+   ```
+
+4. Add your deployed site URL to Supabase **Authentication → URL Configuration → Redirect URLs**. Email confirmation must be enabled/disabled as desired in the Supabase email provider settings.
+
+First sign-in merges browser-saved bookmarks and progress into the account. After sign-in, learning data is kept separately for each account on that browser and synced to Supabase.
+
 ## 🛠️ Upcoming Features
 
-- [ ] User Login and Registration
-- [ ] Save learning progress across devices
+- [x] User Login and Registration
+- [x] Save learning progress across devices
 - [ ] Personalized user dashboard
 - [ ] More interactive coding examples
 - [ ] Quiz and practice questions
@@ -56,4 +89,3 @@ National Institute of Technology, Silchar
 ---
 
 ⭐ If you find this project useful, consider giving this repository a star!
-
