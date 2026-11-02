@@ -2673,6 +2673,12 @@ const DOM = {
   scrollTop: document.getElementById('scrollTop'),
   loadingOverlay: document.getElementById('loadingOverlay'),
   toast: document.getElementById('toast'),
+  contactButton: document.getElementById('contactButton'),
+  contactDialog: document.getElementById('contactDialog'),
+  contactCloseButton: document.getElementById('contactCloseButton'),
+  contactForm: document.getElementById('contactForm'),
+  contactSubmitButton: document.getElementById('contactSubmitButton'),
+  contactStatus: document.getElementById('contactStatus'),
   authButton: document.getElementById('authButton'),
   authDialog: document.getElementById('authDialog'),
   authForm: document.getElementById('authForm'),
@@ -2971,6 +2977,48 @@ function initAuth() {
     window.setTimeout(() => {
       void handleAuthStateChange(session);
     }, 0);
+  });
+}
+
+function initContactForm() {
+  const endpoint = 'https://formsubmit.co/ajax/nitishprajapati6759@gmail.com';
+
+  DOM.contactButton.addEventListener('click', () => {
+    DOM.contactStatus.textContent = '';
+    DOM.contactDialog.showModal();
+  });
+  DOM.contactCloseButton.addEventListener('click', () => DOM.contactDialog.close());
+  DOM.contactForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    DOM.contactSubmitButton.disabled = true;
+    DOM.contactStatus.className = 'contact-status';
+    DOM.contactStatus.textContent = 'Sending your message…';
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(new FormData(DOM.contactForm)))
+      });
+      const result = await response.json();
+
+      if (!response.ok || (result.success !== 'true' && result.success !== true)) {
+        throw new Error(result.message || 'The message could not be sent. Please try again.');
+      }
+
+      DOM.contactForm.reset();
+      DOM.contactStatus.classList.add('success');
+      DOM.contactStatus.textContent = 'Thanks! Your message was submitted. For the first submission, the site owner must confirm FormSubmit’s activation email before delivery is enabled.';
+    } catch (error) {
+      console.error('Contact form submission failed:', error);
+      DOM.contactStatus.classList.add('error');
+      DOM.contactStatus.textContent = error.message || 'Unable to send your message. Please try again later.';
+    } finally {
+      DOM.contactSubmitButton.disabled = false;
+    }
   });
 }
 
@@ -3914,6 +3962,7 @@ function init() {
   initTheme();
   initViewCounter();
   initAuth();
+  initContactForm();
   renderSidebar();
   updateBookmarkUI();
   updateProgressUI();

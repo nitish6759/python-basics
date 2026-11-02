@@ -18,6 +18,7 @@ Each lesson includes a short introduction, a clear explanation, key takeaways, a
 - **📖 Interactive Reading:** Clean and structured interface for a better learning experience.
 - **👁️ View Counter:** Displays website view counts.
 - **🔐 User Authentication:** Sign in with email to sync reading progress and bookmarks across devices.
+- **✉️ Contact Form:** Visitors can send help requests and suggestions to the site owner's inbox.
 - **📱 User-Friendly Interface:** Simple navigation and organized content.
 
 ## 🚀 Website Highlights
@@ -31,6 +32,7 @@ Each lesson includes a short introduction, a clear explanation, key takeaways, a
 | Bookmarks         | Yes         |
 | Search            | Yes         |
 | Theme Switching   | Yes         |
+| Contact form      | Yes         |
 
 ## 🔐 Supabase Authentication Setup
 
@@ -78,6 +80,10 @@ Google sign-in is optional and does not require buying a domain. Configure it be
 7. Open the site, click **Sign in → Continue with Google**, and choose a Google account. Google handles account verification; app email confirmation settings do not need to send a confirmation email for Google sign-in.
 
 Do not put the Google Client secret in this repository or in `supabase-config.js`; keep it only in the Supabase provider settings. Google's OAuth consent screen may show a testing warning while the app remains in testing mode.
+
+### Contact form
+
+The contact form sends a visitor's name, email, optional phone number, topic, and message to `nitishprajapati6759@gmail.com` through FormSubmit. FormSubmit is an external service that processes the submission. On the first test submission, check the inbox and confirm FormSubmit's activation email; submissions will not be delivered until the address is confirmed. Do not ask visitors to include passwords or other sensitive information.
 
 ## 🛠️ Upcoming Features
 

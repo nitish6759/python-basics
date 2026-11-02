@@ -778,7 +778,18 @@ code { font-family: var(--font-mono); font-size: 13px; color: var(--green); back
   border: 1px solid var(--border); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
 }
-.auth-dialog::backdrop, .account-dialog::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); }
+.contact-dialog {
+  width: min(520px, calc(100% - 32px));
+  max-height: min(90vh, 760px);
+  padding: 0;
+  overflow: auto;
+  color: var(--text-primary);
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.auth-dialog::backdrop, .account-dialog::backdrop, .contact-dialog::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); }
 .auth-form { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 28px; }
 .auth-form h2 { margin-right: 28px; font-size: 21px; }
 .auth-description { margin: 0 0 8px; color: var(--text-muted); font-size: 13px; }
@@ -811,6 +822,44 @@ code { font-family: var(--font-mono); font-size: 13px; color: var(--green); back
   font: inherit; cursor: pointer;
 }
 .auth-status { min-height: 18px; color: var(--red); font-size: 12px; text-align: center; }
+.contact-trigger {
+  min-height: 34px;
+  padding: 0 11px;
+  color: var(--text-secondary);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font: 600 12px var(--font-body);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.contact-trigger:hover { color: var(--green); border-color: var(--green); background: var(--green-glow); }
+.contact-form { position: relative; display: flex; flex-direction: column; gap: 9px; padding: 28px; }
+.contact-form h2 { margin-right: 28px; font-size: 21px; }
+.contact-description { margin: 0 0 6px; color: var(--text-muted); font-size: 13px; line-height: 1.6; }
+.contact-form label { margin-top: 3px; color: var(--text-secondary); font-size: 12px; }
+.contact-form label span { color: var(--text-muted); }
+.contact-form input:not([type="hidden"]),
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  color: var(--text-primary);
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font: 14px var(--font-body);
+}
+.contact-form textarea { min-height: 110px; resize: vertical; }
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus { outline: 1px solid var(--green); border-color: var(--green); }
+.contact-privacy { margin-top: 4px; color: var(--text-muted); font-size: 11px; line-height: 1.55; }
+.contact-submit { margin-top: 4px; }
+.contact-submit:disabled { cursor: wait; opacity: 0.65; }
+.contact-status { min-height: 18px; color: var(--red); font-size: 12px; line-height: 1.55; }
+.contact-status.success { color: var(--green); }
+.contact-status.error { color: var(--red); }
 .account-panel { position: relative; padding: 30px; }
 .account-profile { display: flex; align-items: center; gap: 16px; padding: 4px 28px 24px 0; }
 .account-avatar {
