@@ -83,7 +83,7 @@ Do not put the Google Client secret in this repository or in `supabase-config.js
 
 ### Contact form
 
-The contact form sends a visitor's name, email, optional phone number, topic, and message to `nitishprajapati6759@gmail.com` through FormSubmit. FormSubmit is an external service that processes the submission. On the first test submission, check the inbox and confirm FormSubmit's activation email; submissions will not be delivered until the address is confirmed. Do not ask visitors to include passwords or other sensitive information.
+The contact form sends a visitor's name, email, optional phone number, topic, and message to `nitishprajapati6759@gmail.com` through FormSubmit. FormSubmit is an external service that processes the submission. On the first test submission, check the inbox and confirm FormSubmit's activation email; submissions will not be delivered until the address is confirmed. If FormSubmit is unavailable, the form offers a `mailto:` fallback that opens the visitor's email app with their message prefilled. Do not ask visitors to include passwords or other sensitive information.
 
 ## 🛠️ Upcoming Features
 

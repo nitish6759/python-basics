@@ -2679,6 +2679,7 @@ const DOM = {
   contactForm: document.getElementById('contactForm'),
   contactSubmitButton: document.getElementById('contactSubmitButton'),
   contactStatus: document.getElementById('contactStatus'),
+  contactEmailFallback: document.getElementById('contactEmailFallback'),
   authButton: document.getElementById('authButton'),
   authDialog: document.getElementById('authDialog'),
   authForm: document.getElementById('authForm'),
@@ -2985,6 +2986,7 @@ function initContactForm() {
 
   DOM.contactButton.addEventListener('click', () => {
     DOM.contactStatus.textContent = '';
+    DOM.contactEmailFallback.hidden = true;
     DOM.contactDialog.showModal();
   });
   DOM.contactCloseButton.addEventListener('click', () => DOM.contactDialog.close());
@@ -2993,6 +2995,7 @@ function initContactForm() {
     DOM.contactSubmitButton.disabled = true;
     DOM.contactStatus.className = 'contact-status';
     DOM.contactStatus.textContent = 'Sending your message…';
+    DOM.contactEmailFallback.hidden = true;
     const requestController = new AbortController();
     const requestTimeout = window.setTimeout(() => requestController.abort(), 15000);
 
@@ -3019,10 +3022,23 @@ function initContactForm() {
       console.error('Contact form submission failed:', error);
       DOM.contactStatus.classList.add('error');
       DOM.contactStatus.textContent = error.name === 'AbortError'
-        ? 'The request timed out. Your details are still here; check your connection and try again.'
+        ? 'The email service did not respond in time. Your details are still here; try again or use the email app option below.'
         : error instanceof TypeError
-          ? 'Could not connect to the email service. Check your connection and try again.'
-          : error.message || 'Unable to send your message. Please try again later.';
+          ? 'Could not reach the email service. Your details are still here; try again or use the email app option below.'
+          : `${error.message || 'The email service could not send your message.'} Your details are still here; try again or use the email app option below.`;
+      const fields = Object.fromEntries(new FormData(DOM.contactForm));
+      const subject = `Website contact: ${fields.topic || 'Message'}`;
+      const body = [
+        `Name: ${fields.name || ''}`,
+        `Reply email: ${fields.email || ''}`,
+        `Phone: ${fields.phone || 'Not provided'}`,
+        `Topic: ${fields.topic || ''}`,
+        '',
+        'Message:',
+        fields.message || ''
+      ].join('\n');
+      DOM.contactEmailFallback.href = `mailto:nitishprajapati6759@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      DOM.contactEmailFallback.hidden = false;
     } finally {
       window.clearTimeout(requestTimeout);
       DOM.contactSubmitButton.disabled = false;
