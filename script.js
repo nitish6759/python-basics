@@ -2993,10 +2993,13 @@ function initContactForm() {
     DOM.contactSubmitButton.disabled = true;
     DOM.contactStatus.className = 'contact-status';
     DOM.contactStatus.textContent = 'Sending your message…';
+    const requestController = new AbortController();
+    const requestTimeout = window.setTimeout(() => requestController.abort(), 15000);
 
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
+        signal: requestController.signal,
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
@@ -3015,8 +3018,13 @@ function initContactForm() {
     } catch (error) {
       console.error('Contact form submission failed:', error);
       DOM.contactStatus.classList.add('error');
-      DOM.contactStatus.textContent = error.message || 'Unable to send your message. Please try again later.';
+      DOM.contactStatus.textContent = error.name === 'AbortError'
+        ? 'The request timed out. Your details are still here; check your connection and try again.'
+        : error instanceof TypeError
+          ? 'Could not connect to the email service. Check your connection and try again.'
+          : error.message || 'Unable to send your message. Please try again later.';
     } finally {
+      window.clearTimeout(requestTimeout);
       DOM.contactSubmitButton.disabled = false;
     }
   });
